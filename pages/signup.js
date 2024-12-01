@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { emailSignUp, googleSignIn } from "../auth";
+import { emailSignUp, googleSignIn } from "../firebase/auth";
 
 export default function SignUp() {
   const [email, setEmail] = useState("");
@@ -9,45 +9,76 @@ export default function SignUp() {
   const handleSignUp = async () => {
     try {
       await emailSignUp(email, password);
-      alert("Sign-up successful! You can now sign in.");
+      alert("Sign up successful!");
     } catch (err) {
       setError(err.message);
     }
   };
 
-  const handleGoogleSignUp = async () => {
+  const handleGoogleSignIn = async () => {
     try {
       await googleSignIn();
-      alert("Google sign-up successful!");
+      alert("Google Sign-Up successful!");
     } catch (err) {
       setError(err.message);
     }
   };
 
   return (
-    <div style={{ maxWidth: "400px", margin: "0 auto", textAlign: "center" }}>
+    <div style={{ padding: "20px", fontFamily: "Arial" }}>
       <h1>Sign Up</h1>
       <input
         type="email"
         placeholder="Email"
-        value={email}
         onChange={(e) => setEmail(e.target.value)}
-        style={{ display: "block", width: "100%", margin: "10px 0" }}
+        style={{
+          display: "block",
+          marginBottom: "10px",
+          padding: "8px",
+          width: "300px",
+        }}
       />
       <input
         type="password"
         placeholder="Password"
-        value={password}
         onChange={(e) => setPassword(e.target.value)}
-        style={{ display: "block", width: "100%", margin: "10px 0" }}
+        style={{
+          display: "block",
+          marginBottom: "10px",
+          padding: "8px",
+          width: "300px",
+        }}
       />
-      <button onClick={handleSignUp} style={{ margin: "10px 0", padding: "10px 20px" }}>
+      <button
+        onClick={handleSignUp}
+        style={{
+          padding: "10px",
+          backgroundColor: "#4CAF50",
+          color: "white",
+          border: "none",
+          cursor: "pointer",
+          marginBottom: "10px",
+        }}
+      >
         Sign Up with Email
       </button>
-      <button onClick={handleGoogleSignUp} style={{ margin: "10px 0", padding: "10px 20px" }}>
+      <button
+        onClick={handleGoogleSignIn}
+        style={{
+          padding: "10px",
+          backgroundColor: "#4285F4",
+          color: "white",
+          border: "none",
+          cursor: "pointer",
+        }}
+      >
         Sign Up with Google
       </button>
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      {error && (
+        <p style={{ color: "red", marginTop: "10px" }}>
+          Error: {error}
+        </p>
+      )}
     </div>
   );
 }
