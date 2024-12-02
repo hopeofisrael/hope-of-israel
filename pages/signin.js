@@ -1,17 +1,18 @@
 import { useState } from "react";
-import { emailSignIn } from "../firebase/auth";
+import { emailSignIn } from "../firebase/auth"; // Import the email sign-in function
 
 export default function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
+  // Handle sign-in button click
   const handleSignIn = async () => {
     try {
-      await emailSignIn(email, password);
+      await emailSignIn(email, password); // Call the sign-in function from auth.js
       alert("Sign in successful!");
     } catch (err) {
-      setError(err.message);
+      setError(err.message); // Catch any error (e.g., incorrect credentials)
     }
   };
 
@@ -21,15 +22,17 @@ export default function SignIn() {
       <input
         type="email"
         placeholder="Email"
-        onChange={(e) => setEmail(e.target.value)}
+        value={email}
+        onChange={(e) => setEmail(e.target.value)} // Update email state
       />
       <input
         type="password"
         placeholder="Password"
-        onChange={(e) => setPassword(e.target.value)}
+        value={password}
+        onChange={(e) => setPassword(e.target.value)} // Update password state
       />
       <button onClick={handleSignIn}>Sign In with Email</button>
-      {error && <p>{error}</p>}
+      {error && <p>{error}</p>} {/* Display error message if any */}
     </div>
   );
 }
