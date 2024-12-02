@@ -1,10 +1,5 @@
-import { auth } from "./firebase"; // Ensure this imports your Firebase instance
-import { 
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  signInWithPopup,
-  GoogleAuthProvider 
-} from "firebase/auth";
+import { auth } from './firebaseConfig'; // Import the Firebase configuration and auth instance
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 
 // Your Google Apps Script URL
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx0pB2WlIYM7okYkOwJ8rlsQc1arfCZ6XZSiJ2h5BSjQ2PovP8STdha0ijnCW7peLF9-g/exec";
@@ -48,8 +43,6 @@ const fetchUserDataFromSheet = async (email) => {
 // Function for signing up with email and password
 export const emailSignUp = async (email, password) => {
   const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-
-  // Send user data to Google Sheets
   await sendUserDataToSheet(userCredential.user.email, "Email/Password");
   console.log("User signed up successfully.");
 };
@@ -57,28 +50,21 @@ export const emailSignUp = async (email, password) => {
 // Function for signing in with email and password
 export const emailSignIn = async (email, password) => {
   const userCredential = await signInWithEmailAndPassword(auth, email, password);
-
-  // Fetch user data from Google Sheets
   const userData = await fetchUserDataFromSheet(userCredential.user.email);
 
   if (userData) {
     console.log("User data:", userData);
-    // Handle user data as needed, e.g., display it in the app
   }
 };
 
 // Function for signing in with Google
 export const googleSignIn = async () => {
   const result = await signInWithPopup(auth, new GoogleAuthProvider());
-
-  // Fetch user data from Google Sheets
   const userData = await fetchUserDataFromSheet(result.user.email);
 
   if (userData) {
     console.log("User data:", userData);
-    // Handle user data as needed, e.g., display it in the app
   } else {
-    // If user data is not found, send it to the sheet
     await sendUserDataToSheet(result.user.email, "Google");
     console.log("User data sent to Google Sheets.");
   }
