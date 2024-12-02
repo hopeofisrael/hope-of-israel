@@ -1,7 +1,7 @@
-import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
+// Import Firebase library
+import { initializeApp } from 'firebase/app';
 
-// Firebase configuration
+// Firebase configuration (replace with your Firebase config from Firebase Console)
 const firebaseConfig = {
   apiKey: "AIzaSyDnKHJqHvV5E8m-LIMzBJfb0JK8F2FTfd0",
   authDomain: "hope-of-israel-796fa.firebaseapp.com",
@@ -14,7 +14,4 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
-// Export the auth instance
-const auth = getAuth(app);
-
-export { app, auth };
+export default app;  // Exporting Firebase app for use in other files
