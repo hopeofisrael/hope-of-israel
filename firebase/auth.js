@@ -12,6 +12,7 @@ const sendUserDataToSheet = async (email, provider) => {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({ email, provider }),
+    mode: 'cors',  // Add CORS mode
   });
 
   const result = await response.json();
@@ -27,6 +28,7 @@ const sendUserDataToSheet = async (email, provider) => {
 const fetchUserDataFromSheet = async (email) => {
   const response = await fetch(`${SCRIPT_URL}?email=${encodeURIComponent(email)}`, {
     method: "GET",
+    mode: 'cors',  // Add CORS mode
   });
 
   const result = await response.json();
@@ -42,30 +44,42 @@ const fetchUserDataFromSheet = async (email) => {
 
 // Function for signing up with email and password
 export const emailSignUp = async (email, password) => {
-  const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-  await sendUserDataToSheet(userCredential.user.email, "Email/Password");
-  console.log("User signed up successfully.");
+  try {
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    await sendUserDataToSheet(userCredential.user.email, "Email/Password");
+    console.log("User signed up successfully.");
+  } catch (error) {
+    console.error("Error signing up:", error.message);
+  }
 };
 
 // Function for signing in with email and password
 export const emailSignIn = async (email, password) => {
-  const userCredential = await signInWithEmailAndPassword(auth, email, password);
-  const userData = await fetchUserDataFromSheet(userCredential.user.email);
+  try {
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    const userData = await fetchUserDataFromSheet(userCredential.user.email);
 
-  if (userData) {
-    console.log("User data:", userData);
+    if (userData) {
+      console.log("User data:", userData);
+    }
+  } catch (error) {
+    console.error("Error signing in:", error.message);
   }
 };
 
 // Function for signing in with Google
 export const googleSignIn = async () => {
-  const result = await signInWithPopup(auth, new GoogleAuthProvider());
-  const userData = await fetchUserDataFromSheet(result.user.email);
+  try {
+    const result = await signInWithPopup(auth, new GoogleAuthProvider());
+    const userData = await fetchUserDataFromSheet(result.user.email);
 
-  if (userData) {
-    console.log("User data:", userData);
-  } else {
-    await sendUserDataToSheet(result.user.email, "Google");
-    console.log("User data sent to Google Sheets.");
+    if (userData) {
+      console.log("User data:", userData);
+    } else {
+      await sendUserDataToSheet(result.user.email, "Google");
+      console.log("User data sent to Google Sheets.");
+    }
+  } catch (error) {
+    console.error("Error signing in with Google:", error.message);
   }
 };

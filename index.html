@@ -1,0 +1,63 @@
+<div id="sign-up">
+  <h2>Sign Up</h2>
+  <input type="email" id="sign-up-email" placeholder="Enter email" />
+  <input type="password" id="sign-up-password" placeholder="Enter password" />
+  <button onclick="signUp()">Sign Up</button>
+</div>
+
+<div id="sign-in">
+  <h2>Sign In</h2>
+  <input type="email" id="sign-in-email" placeholder="Enter email" />
+  <input type="password" id="sign-in-password" placeholder="Enter password" />
+  <button onclick="signIn()">Sign In</button>
+</div>
+
+<div id="google-sign-in">
+  <button onclick="googleSignIn()">Sign in with Google</button>
+</div>
+
+<div id="user-info"></div>
+
+<script src="https://www.gstatic.com/firebasejs/9.1.2/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.1.2/firebase-auth.js"></script>
+<script src="firebaseConfig.js"></script> <!-- Your Firebase config file -->
+<script src="auth.js"></script> <!-- Your auth.js file -->
+
+<script>
+  // Sign-up function
+  async function signUp() {
+    const email = document.getElementById('sign-up-email').value;
+    const password = document.getElementById('sign-up-password').value;
+    try {
+      await emailSignUp(email, password);
+      alert("Signed Up successfully!");
+    } catch (error) {
+      console.error("Error signing up:", error);
+      alert(error.message);
+    }
+  }
+
+  // Sign-in function
+  async function signIn() {
+    const email = document.getElementById('sign-in-email').value;
+    const password = document.getElementById('sign-in-password').value;
+    try {
+      await emailSignIn(email, password);
+      alert("Signed In successfully!");
+    } catch (error) {
+      console.error("Error signing in:", error);
+      alert(error.message);
+    }
+  }
+
+  // Google sign-in function
+  async function googleSignIn() {
+    try {
+      await googleSignIn();
+      alert("Signed In with Google successfully!");
+    } catch (error) {
+      console.error("Error signing in with Google:", error);
+      alert(error.message);
+    }
+  }
+</script>
