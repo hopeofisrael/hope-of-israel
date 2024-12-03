@@ -1,17 +1,19 @@
 const fetch = require('node-fetch'); // Ensure node-fetch is installed
 
 module.exports = async (req, res) => {
-    // Allow all origins for now (you can restrict this further later)
-    res.setHeader('Access-Control-Allow-Origin', 'https://hopeofisrael-fnvk9cpyw-carolyns-projects-e67f89eb.vercel.app'); // Allow specific frontend subdomain
-    res.setHeader('Access-Control-Allow-Methods', 'POST, GET, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    // Handle CORS headers
+    res.setHeader('Access-Control-Allow-Origin', 'https://hopeofisrael-fnvk9cpyw-carolyns-projects-e67f89eb.vercel.app'); // Allow frontend domain
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS'); // Allow specific methods
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type'); // Allow content type headers
+    res.setHeader('Access-Control-Allow-Credentials', 'true'); // Allow credentials (cookies, authorization headers)
 
     // Handle preflight OPTIONS request
     if (req.method === 'OPTIONS') {
-        return res.status(200).send('CORS preflight handled');
+        // Respond with a 204 No Content status to indicate successful preflight handling
+        return res.status(204).end();
     }
 
-    // Ensure only POST requests are allowed
+    // Ensure only POST requests are allowed for the API logic
     if (req.method !== 'POST') {
         return res.status(405).json({ error: 'Method Not Allowed' });
     }
