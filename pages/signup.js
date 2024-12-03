@@ -1,63 +1,37 @@
-// pages/signup.js
-import { useState } from 'react';
-import { useRouter } from 'next/router';
+import { useState } from "react";
+import { emailSignUp, googleSignIn } from "../firebase/auth";
 
-const Signup = () => {
-  const [email, setEmail] = useState('');
-  const [provider, setProvider] = useState('google'); // or dynamically set it based on the signup method
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
-  const router = useRouter();
+export default function SignUp() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
+  const handleSignUp = async () => {
     try {
-      // Making POST request to the Vercel API Proxy
-      const response = await fetch('/api/proxy', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, provider }),
-      });
+      await emailSignUp(email, password);
+      alert("Sign up successful!");
+    } catch (err) {
+      setError(err.message);
+    }
+  };
 
-      const data = await response.json();
-
-      if (data.success) {
-        setSuccess('Signup successful!');
-        setError('');
-        // Optionally redirect after signup
-        router.push('/signin'); // Redirect to signin page after successful signup
-      } else {
-        setError('Error: ' + (data.error || 'Something went wrong'));
-        setSuccess('');
-      }
-    } catch (error) {
-      setError('Error: ' + error.message);
-      setSuccess('');
+  const handleGoogleSignIn = async () => {
+    try {
+      await googleSignIn();
+      alert("Google Sign-In successful!");
+    } catch (err) {
+      setError(err.message);
     }
   };
 
   return (
     <div>
       <h1>Sign Up</h1>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      {success && <p style={{ color: 'green' }}>{success}</p>}
-      <form onSubmit={handleSubmit}>
-        <label>
-          Email:
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </label>
-        <button type="submit">Sign Up</button>
-      </form>
+      <input type="email" placeholder="Email" onChange={(e) => setEmail(e.target.value)} />
+      <input type="password" placeholder="Password" onChange={(e) => setPassword(e.target.value)} />
+      <button onClick={handleSignUp}>Sign Up with Email</button>
+      <button onClick={handleGoogleSignIn}>Sign Up with Google</button>
+      {error && <p>{error}</p>}
     </div>
   );
-};
-
-export default Signup;
+}

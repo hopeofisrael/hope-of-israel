@@ -1,18 +1,17 @@
-import { auth } from './firebaseConfig'; // Import the Firebase configuration and auth instance
+import { auth } from './firebaseConfig'; // Import the Firebase auth instance
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 
-// Your Google Apps Script URL
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx0pB2WlIYM7okYkOwJ8rlsQc1arfCZ6XZSiJ2h5BSjQ2PovP8STdha0ijnCW7peLF9-g/exec";
+// Your Vercel Proxy URL (replacing the direct Google Apps Script URL)
+const PROXY_URL = "/api/proxy";  // Vercel serverless function endpoint
 
-// Function to send user data to Google Sheets
+// Function to send user data to Google Sheets via the proxy
 const sendUserDataToSheet = async (email, provider) => {
-  const response = await fetch(SCRIPT_URL, {
+  const response = await fetch(PROXY_URL, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({ email, provider }),
-    mode: 'cors',  // Add CORS mode
   });
 
   const result = await response.json();
@@ -24,11 +23,10 @@ const sendUserDataToSheet = async (email, provider) => {
   }
 };
 
-// Function to fetch user data from Google Sheets
+// Function to fetch user data from Google Sheets via the proxy
 const fetchUserDataFromSheet = async (email) => {
-  const response = await fetch(`${SCRIPT_URL}?email=${encodeURIComponent(email)}`, {
+  const response = await fetch(`${PROXY_URL}?email=${encodeURIComponent(email)}`, {
     method: "GET",
-    mode: 'cors',  // Add CORS mode
   });
 
   const result = await response.json();
