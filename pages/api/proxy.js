@@ -1,8 +1,8 @@
 const fetch = require('node-fetch'); // Ensure node-fetch is installed
 
 module.exports = async (req, res) => {
-    // Handle CORS for all origins
-    res.setHeader('Access-Control-Allow-Origin', '*');
+    // Allow all origins for now (you can restrict this further later)
+    res.setHeader('Access-Control-Allow-Origin', 'https://hopeofisrael-fnvk9cpyw-carolyns-projects-e67f89eb.vercel.app'); // Allow specific frontend subdomain
     res.setHeader('Access-Control-Allow-Methods', 'POST, GET, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
