@@ -15,6 +15,7 @@ export default async (req, res) => {
 
     // Ensure only POST requests are allowed for the API logic
     if (req.method !== 'POST') {
+        console.log(`Invalid method: ${req.method}`);
         return res.status(405).json({ error: 'Method Not Allowed' });
     }
 
@@ -33,11 +34,9 @@ export default async (req, res) => {
         });
 
         // Log the response status and body
-        console.log('Received response:', response.status, await response.json());
-
-        // Ensure the response is JSON
         const data = await response.json();
-        
+        console.log('Received response from sendtosheets:', data);
+
         // Return the response to the client with the correct status
         res.status(response.status).json(data);
     } catch (error) {
