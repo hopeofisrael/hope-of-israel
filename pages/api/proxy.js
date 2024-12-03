@@ -19,6 +19,9 @@ module.exports = async (req, res) => {
     }
 
     try {
+        // Log the incoming request body
+        console.log('Received request body:', req.body);
+
         // Forward the request to the sendtosheets API
         const scriptUrl = 'https://hopeofisrael-pnpts0t0a-carolyns-projects-e67f89eb.vercel.app/api/sendtosheets';
         const response = await fetch(scriptUrl, {
@@ -29,6 +32,9 @@ module.exports = async (req, res) => {
             body: req.body, // Forward the request body
         });
 
+        // Log the response status and body
+        console.log('Received response:', response.status, await response.json());
+
         // Ensure the response is JSON
         const data = await response.json();
         
@@ -36,6 +42,6 @@ module.exports = async (req, res) => {
         res.status(response.status).json(data);
     } catch (error) {
         console.error('Error forwarding request:', error);
-        res.status(500).json({ error: 'Error forwarding request to sendtosheets' });
+        res.status(500).json({ error: 'Error forwarding request to sendtosheets', details: error.message });
     }
 };
