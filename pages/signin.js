@@ -1,38 +1,64 @@
-import { useState } from "react";
-import { emailSignIn } from "../firebase/auth"; // Import the email sign-in function
+// pages/signin.js
+import { useState } from 'react';
+import { useRouter } from 'next/router';
 
-export default function SignIn() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+const Signin = () => {
+  const [email, setEmail] = useState('');
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+  const router = useRouter();
 
-  // Handle sign-in button click
-  const handleSignIn = async () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
     try {
-      await emailSignIn(email, password); // Call the sign-in function from auth.js
-      alert("Sign in successful!");
-    } catch (err) {
-      setError(err.message); // Catch any error (e.g., incorrect credentials)
+      // Making GET request to the Vercel API Proxy
+      const response = await fetch('/api/proxy', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        // You can pass the email in the query params or body, if needed
+        body: JSON.stringify({ email }), 
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setSuccess('Signin successful!');
+        setError('');
+        // Optionally redirect to a dashboard or another page
+        router.push('/dashboard'); // Redirect after successful signin
+      } else {
+        setError('Error: ' + (data.error || 'Something went wrong'));
+        setSuccess('');
+      }
+    } catch (error) {
+      setError('Error: ' + error.message);
+      setSuccess('');
     }
   };
 
   return (
     <div>
       <h1>Sign In</h1>
-      <input
-        type="email"
-        placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)} // Update email state
-      />
-      <input
-        type="password"
-        placeholder="Password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)} // Update password state
-      />
-      <button onClick={handleSignIn}>Sign In with Email</button>
-      {error && <p>{error}</p>} {/* Display error message if any */}
+      {error && <p style={{ color: 'red' }}>{error}</p>}
+      {success && <p style={{ color: 'green' }}>{success}</p>}
+      <form onSubmit={handleSubmit}>
+        <label>
+          Email:
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+        </label>
+        <button type="submit">Sign In</button>
+      </form>
     </div>
   );
-}
+};
+
+export default Signin;
+
