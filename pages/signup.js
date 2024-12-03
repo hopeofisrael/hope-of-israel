@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 
 const Signup = () => {
   const [email, setEmail] = useState('');
-  const [provider, setProvider] = useState('google'); // or dynamically set it based on the signup method
+  const [provider, setProvider] = useState('google'); // You can dynamically set this based on the signup method
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const router = useRouter();
@@ -19,12 +19,12 @@ const Signup = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email, provider }),
+        body: JSON.stringify({ email, provider }), // Send email and provider to proxy
       });
 
       const data = await response.json();
 
-      if (data.success) {
+      if (response.ok) {
         setSuccess('Signup successful!');
         setError('');
         // Optionally redirect after signup
@@ -53,6 +53,19 @@ const Signup = () => {
             onChange={(e) => setEmail(e.target.value)}
             required
           />
+        </label>
+        <label>
+          Provider:
+          <select
+            value={provider}
+            onChange={(e) => setProvider(e.target.value)}
+            required
+          >
+            <option value="google">Google</option>
+            <option value="facebook">Facebook</option>
+            <option value="twitter">Twitter</option>
+            {/* Add more providers as needed */}
+          </select>
         </label>
         <button type="submit">Sign Up</button>
       </form>

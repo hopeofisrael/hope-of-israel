@@ -1,3 +1,5 @@
+// api/proxy.js
+
 const fetch = require('node-fetch'); // Ensure node-fetch is installed
 
 module.exports = async (req, res) => {
@@ -11,23 +13,37 @@ module.exports = async (req, res) => {
     return res.status(200).send('CORS preflight handled');
   }
 
-  try {
-    // Define the Google Apps Script URL
-    const scriptUrl = 'https://script.google.com/macros/s/AKfycbxpv2i8zh5GAYlKp5-xYpHehtYPYxaBwCHJLzQcTDFEFt9njlC7r0gzr4N5-9vqWaIVvQ/exec';
-    
-    // Forward the request to Google Apps Script
-    const response = await fetch(scriptUrl, {
-      method: req.method, // Forward the HTTP method (GET, POST, etc.)
-      headers: req.headers, // Forward the headers from the client request
-      body: req.body, // Forward the request body
-    });
+  if (req.method === 'POST') {
+    try {
+      const { email, provider } = req.body;
 
-    // Get the response data from the Apps Script
-    const data = await response.json();
+      // Ensure email and provider are provided
+      if (!email || !provider) {
+        return res.status(400).json({ error: 'Missing email or provider' });
+      }
 
-    // Return the response to the client with correct status
-    res.status(response.status).json(data);
-  } catch (error) {
-    res.status(500).json({ error: 'Error forwarding request to Apps Script.' });
+      // Define the Google Apps Script URL
+      const scriptUrl = 'https://script.google.com/macros/s/AKfycbxpv2i8zh5GAYlKp5-xYpHehtYPYxaBwCHJLzQcTDFEFt9njlC7r0gzr4N5-9vqWaIVvQ/exec';
+      
+      // Forward the request to Google Apps Script
+      const response = await fetch(scriptUrl, {
+        method: 'POST', // Forward the HTTP method as POST
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, provider }), // Send email and provider to Google Apps Script
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        res.status(200).json({ message: 'Data appended successfully' });
+      } else {
+        res.status(500).json({ error: 'Failed to append data to Sheets' });
+      }
+    } catch (error) {
+      console.error('Error forwarding request to Apps Script:', error.message);
+      res.status(500).json({ error: 'Error forwarding request to Apps Script' });
+    }
+  } else {
+    res.status(405).json({ error: 'Method Not Allowed' });
   }
 };
