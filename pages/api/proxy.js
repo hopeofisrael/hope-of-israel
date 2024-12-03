@@ -1,33 +1,39 @@
 const fetch = require('node-fetch'); // Ensure node-fetch is installed
 
 module.exports = async (req, res) => {
-    // Allow CORS for all origins
+    // Handle CORS for all origins
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'POST, GET, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
+    // Handle preflight OPTIONS request
     if (req.method === 'OPTIONS') {
-        // Handle preflight OPTIONS request
         return res.status(200).send('CORS preflight handled');
     }
 
+    // Ensure only POST requests are allowed
+    if (req.method !== 'POST') {
+        return res.status(405).json({ error: 'Method Not Allowed' });
+    }
+
     try {
-        // Define the sendtosheets.js URL
-        const scriptUrl = 'https://hopeofisrael-pnpts0t0a-carolyns-projects-e67f89eb.vercel.app/api/sendtosheets';
-        
         // Forward the request to the sendtosheets API
+        const scriptUrl = 'https://hopeofisrael-pnpts0t0a-carolyns-projects-e67f89eb.vercel.app/api/sendtosheets';
         const response = await fetch(scriptUrl, {
             method: req.method, // Forward the HTTP method (POST)
-            headers: req.headers, // Forward the headers from the client request
+            headers: {
+                'Content-Type': 'application/json',
+            },
             body: req.body, // Forward the request body
         });
 
-        // Get the response data from sendtosheets
+        // Ensure the response is JSON
         const data = await response.json();
-
-        // Return the response to the client with correct status
+        
+        // Return the response to the client with the correct status
         res.status(response.status).json(data);
     } catch (error) {
-        res.status(500).json({ error: 'Error forwarding request to sendtosheets.' });
+        console.error('Error forwarding request:', error);
+        res.status(500).json({ error: 'Error forwarding request to sendtosheets' });
     }
 };
