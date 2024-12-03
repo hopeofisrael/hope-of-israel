@@ -1,13 +1,15 @@
 import { google } from 'googleapis';
 
-const SHEET_ID = process.env.GOOGLE_SHEET_ID;
-const SHEET_RANGE = 'Sheet1!A:B'; // Adjust range as needed for your sheet
+// Use your actual Google Sheet ID
+const SHEET_ID = '1jdB9M8YOYjZEPL82sNNd6nBM74Q7AYnWE_--JoVnNww';
+const SHEET_RANGE = 'Sheet1!A:B'; // This range can be adjusted as per your sheet
 
+// Function to append data to Google Sheets
 async function appendToGoogleSheet(data) {
     const auth = new google.auth.GoogleAuth({
         credentials: {
-            client_email: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
-            private_key: process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, '\n'),
+            client_email: 'hope-of-israel@hope-of-israel-442021.iam.gserviceaccount.com', // Your service email
+            private_key: '4dfe63b511e0b5581095880ad698e71c22dd96e0', // Your private key
         },
         scopes: ['https://www.googleapis.com/auth/spreadsheets'],
     });
@@ -23,6 +25,7 @@ async function appendToGoogleSheet(data) {
     });
 }
 
+// API route handler
 export default async function handler(req, res) {
     if (req.method !== 'POST') {
         return res.status(405).send({ message: 'Only POST requests allowed' });
