@@ -1,6 +1,9 @@
 import { auth } from './firebaseConfig'; // Import the Firebase auth instance
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 
+// Log the environment variable for debugging purposes
+console.log('NEXT_PUBLIC_PROXY_URL:', process.env.NEXT_PUBLIC_PROXY_URL);
+
 // Ensure the URL is constructed correctly, regardless of trailing slash
 const PROXY_URL = process.env.NEXT_PUBLIC_PROXY_URL
   ? `${process.env.NEXT_PUBLIC_PROXY_URL}/api/proxy`.replace(/\/\//g, '/')
