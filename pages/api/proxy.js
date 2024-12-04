@@ -1,3 +1,5 @@
+// pages/api/proxy.js
+
 export default async function handler(req, res) {
   // Allow any origin (ensure you configure CORS properly for production)
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -11,7 +13,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const apiUrl = "https://script.google.com/macros/s/AKfycbxs7HgQa2G4w2LYqykoceaTzDZvT9B8G1iqDWerG_l2f4bB2-pDtcJd63PsptVkdd_tAA/exec";  // Replace with your Apps Script deployment ID
+    const apiUrl = process.env.API_URL;  // Use the URL from your environment variable
 
     // Forward the request to Google Apps Script
     const response = await fetch(apiUrl, {
