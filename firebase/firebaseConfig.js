@@ -1,17 +1,22 @@
+// firebaseConfig.js
 import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";  // Import getAuth to create the auth instance
+import { getAuth } from "firebase/auth";
+import { getDatabase } from "firebase/database";
 
+// Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyDnKHJqHvV5E8m-LIMzBJfb0JK8F2FTfd0",
   authDomain: "hope-of-israel-796fa.firebaseapp.com",
+  databaseURL: "https://hope-of-israel-796fa-default-rtdb.firebaseio.com",
   projectId: "hope-of-israel-796fa",
   storageBucket: "hope-of-israel-796fa.firebasestorage.app",
   messagingSenderId: "626678328925",
-  appId: "1:626678328925:web:42dec1dca540ed77e9a7b4",
+  appId: "1:626678328925:web:42dec1dca540ed77e9a7b4"
 };
 
+// Initialize Firebase
 const app = initializeApp(firebaseConfig);
-
-// Initialize the auth instance and export it
 const auth = getAuth(app);
-export { auth };  // Export auth so it can be used in other files
+const db = getDatabase(app);
+
+export { auth, db };

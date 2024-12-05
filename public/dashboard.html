@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard</title>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDnKHJqHvV5E8m-LIMzBJfb0JK8F2FTfd0",
+      authDomain: "hope-of-israel-796fa.firebaseapp.com",
+      databaseURL: "https://hope-of-israel-796fa-default-rtdb.firebaseio.com",
+      projectId: "hope-of-israel-796fa",
+      storageBucket: "hope-of-israel-796fa.firebasestorage.app",
+      messagingSenderId: "626678328925",
+      appId: "1:626678328925:web:42dec1dca540ed77e9a7b4",
+      measurementId: "G-8NRCSXW6S8"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const firestore = getFirestore(app);
+
+    // Show user data on the dashboard
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const userRef = doc(firestore, 'users', user.uid);
+        const userSnapshot = await getDoc(userRef);
+        if (userSnapshot.exists()) {
+          const userData = userSnapshot.data();
+          document.getElementById('email').innerText = `Email: ${userData.email}`;
+          document.getElementById('completedNames').innerText = `Completed Names: ${userData.completedNames}`;
+          document.getElementById('battalion').innerText = `Battalion: ${userData.battalion}`;
+
+          // Get battalion data
+          const battalionRef = doc(firestore, 'battalions', userData.battalion);
+          const battalionSnapshot = await getDoc(battalionRef);
+          if (battalionSnapshot.exists()) {
+            const battalionData = battalionSnapshot.data();
+            document.getElementById('battalionTotal').innerText = `Battalion Total: ${battalionData.totalCompletedNames}`;
+          }
+        }
+      } else {
+        window.location.href = 'signup.html';  // Redirect to signup if not logged in
+      }
+    });
+  </script>
+</head>
+<body>
+  <h1>Welcome to your Dashboard</h1>
+  <p id="email"></p>
+  <p id="completedNames"></p>
+  <p id="battalion"></p>
+  <p id="battalionTotal"></p>
+
+  <button onclick="addNames()">Add Names</button>
+
+  <script type="module">
+    async function addNames() {
+      const namesCompleted = prompt("How many names did you complete?");
+      if (namesCompleted && !isNaN(namesCompleted)) {
+        const user = getAuth().currentUser;
+        if (user) {
+          const userRef = doc(firestore, 'users', user.uid);
+          const battalionRef = doc(firestore, 'battalions', user.battalion);
+          
+          // Update personal completed names
+          await setDoc(userRef, {
+            completedNames: increment(Number(namesCompleted))
+          }, { merge: true });
+
+          // Update battalion total completed names
+          await setDoc(battalionRef, {
+            totalCompletedNames: increment(Number(namesCompleted))
+          }, { merge: true });
+
+          alert("Names added successfully!");
+          window.location.reload();  // Reload the page to reflect updated data
+        }
+      }
+    }
+  </script>
+</body>
+</html>

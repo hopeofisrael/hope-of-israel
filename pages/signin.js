@@ -18,7 +18,6 @@ const Signin = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        // You can pass the email in the query params or body, if needed
         body: JSON.stringify({ email }), 
       });
 

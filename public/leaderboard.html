@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Leaderboards</title>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-app.js";
+    import { getFirestore, collection, getDocs, orderBy, query } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDnKHJqHvV5E8m-LIMzBJfb0JK8F2FTfd0",
+      authDomain: "hope-of-israel-796fa.firebaseapp.com",
+      databaseURL: "https://hope-of-israel-796fa-default-rtdb.firebaseio.com",
+      projectId: "hope-of-israel-796fa",
+      storageBucket: "hope-of-israel-796fa.firebasestorage.app",
+      messagingSenderId: "626678328925",
+      appId: "1:626678328925:web:42dec1dca540ed77e9a7b4",
+      measurementId: "G-8NRCSXW6S8"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const firestore = getFirestore(app);
+
+    async function getBattalionLeaderboard() {
+      const battalionRef = collection(firestore, "battalions");
+      const battalionQuery = query(battalionRef, orderBy("totalCompletedNames", "desc"));
+      const battalionSnapshot = await getDocs(battalionQuery);
+      battalionSnapshot.forEach((doc) => {
+        const battalionData = doc.data();
+        const battalionName = doc.id;
+        const totalCompletedNames = battalionData.totalCompletedNames || 0;
+        const battalionElement = document.createElement("li");
+        battalionElement.textContent = `${battalionName}: ${totalCompletedNames} names`;
+        document.getElementById("leaderboard").appendChild(battalionElement);
+      });
+    }
+
+    getBattalionLeaderboard();
+  </script>
+</head>
+<body>
+  <h1>Battalion Leaderboard</h1>
+  <ul id="leaderboard"></ul>
+</body>
+</html>

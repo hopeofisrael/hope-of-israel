@@ -10,12 +10,18 @@ module.exports = {
             key: 'Content-Security-Policy',
             value: `
               default-src 'self';
-              script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.gstatic.com https://www.googleapis.com https://securetoken.googleapis.com https://identitytoolkit.googleapis.com https://script.google.com https://vercel.live https://vercel.com https://cdn.vercel.live;
+              script-src 'self' 'unsafe-inline' 'unsafe-eval' 
+                https://www.gstatic.com https://www.googleapis.com 
+                https://securetoken.googleapis.com https://identitytoolkit.googleapis.com 
+                https://script.google.com;
               style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
               font-src 'self' https://fonts.gstatic.com;
-              connect-src 'self' https://vercel.live https://www.googleapis.com https://firestore.googleapis.com https://firebase.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com ${process.env.NEXT_PUBLIC_PROXY_URL};
+              connect-src 'self' https://vercel.live https://www.googleapis.com 
+                https://firestore.googleapis.com https://firebase.googleapis.com 
+                https://identitytoolkit.googleapis.com https://securetoken.googleapis.com
+                https://sheets.googleapis.com; 
               img-src 'self' data:;
-              frame-src 'self' https://vercel.live;
+              frame-src 'self';
             `.replace(/\n/g, ' ').replace(/\s{2,}/g, ' ').trim(), // Minify policy string
           },
         ],
@@ -23,7 +29,6 @@ module.exports = {
     ];
   },
   env: {
-    NEXT_PUBLIC_PROXY_URL: process.env.NEXT_PUBLIC_PROXY_URL,
-    API_URL: process.env.API_URL,
+    API_URL: process.env.API_URL, // We are keeping only the API_URL here now
   },
 };
