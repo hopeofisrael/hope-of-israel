@@ -10,7 +10,7 @@ module.exports = {
             key: 'Content-Security-Policy',
             value: `
               default-src 'self';
-              script-src 'self' 
+              script-src 'self' 'unsafe-inline' 
                 https://www.gstatic.com https://www.googleapis.com 
                 https://securetoken.googleapis.com https://identitytoolkit.googleapis.com 
                 https://script.google.com https://vercel.live;
@@ -21,7 +21,7 @@ module.exports = {
                 https://identitytoolkit.googleapis.com https://securetoken.googleapis.com
                 https://sheets.googleapis.com; 
               img-src 'self' data:;
-              frame-src 'self';
+              frame-src 'self' https://vercel.live;
             `.replace(/\n/g, ' ').replace(/\s{2,}/g, ' ').trim(), // Minify policy string
           },
         ],
