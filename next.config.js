@@ -13,7 +13,7 @@ module.exports = {
               script-src 'self' 'unsafe-inline' 'unsafe-eval' 
                 https://www.gstatic.com https://www.googleapis.com 
                 https://securetoken.googleapis.com https://identitytoolkit.googleapis.com 
-                https://script.google.com https://vercel.live https://vercel.live/_next-live/feedback/feedback.js;
+                https://script.google.com https://vercel.live;
               style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
               font-src 'self' https://fonts.gstatic.com;
               connect-src 'self' https://vercel.live https://www.googleapis.com 
