@@ -3,81 +3,94 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Signup</title>
-  <script type="module">
-    // Import Firebase SDK modules (modular)
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-auth.js";
-    import { getFirestore, doc, setDoc, serverTimestamp, increment } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-firestore.js";
+  <title>Sign Up</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      background-color: #111;
+      color: #fff;
+    }
+    .input, .button {
+      margin-top: 10px;
+      padding: 10px 20px;
+      background-color: #00b5d8;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
 
-    // Firebase configuration
+    .button:hover {
+      background-color: #0092b3;
+    }
+
+    input {
+      padding: 10px;
+      margin-top: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Sign Up</h1>
+  <input type="email" id="email" placeholder="Enter email" />
+  <input type="password" id="password" placeholder="Enter password" />
+  <button class="button" id="signUpButton">Sign Up</button>
+
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  <script>
     const firebaseConfig = {
       apiKey: "AIzaSyDnKHJqHvV5E8m-LIMzBJfb0JK8F2FTfd0",
       authDomain: "hope-of-israel-796fa.firebaseapp.com",
-      databaseURL: "https://hope-of-israel-796fa-default-rtdb.firebaseio.com",
       projectId: "hope-of-israel-796fa",
-      storageBucket: "hope-of-israel-796fa.firebasestorage.app",
+      storageBucket: "hope-of-israel-796fa.appspot.com",
       messagingSenderId: "626678328925",
       appId: "1:626678328925:web:42dec1dca540ed77e9a7b4",
       measurementId: "G-8NRCSXW6S8"
     };
 
     // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const firestore = getFirestore(app);
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
 
-    // Function to handle user sign-up
-    document.getElementById('signupForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-
-      // Get form data
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
-      const battalion = document.getElementById('battalion').value;
-
-      try {
-        // Sign up with Firebase Auth (using the existing flow)
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        const user = userCredential.user;
-
-        // Save user data to Firestore in the 'users' collection
-        const userRef = doc(firestore, 'users', user.uid); // Use UID as document ID
-        await setDoc(userRef, {
-          email: user.email,
-          battalion: battalion,
-          completedNames: 0,  // Initialize completed names count as 0
-          createdAt: serverTimestamp()  // Timestamp for when user was created
-        });
-
-        // Save battalion-wide data: Add battalion data if it doesn't exist
-        const battalionRef = doc(firestore, 'battalions', battalion); // Using battalion as the document ID
-        await setDoc(battalionRef, {
-          totalCompletedNames: increment(0)  // Initialize battalion total (or increment if exists)
-        }, { merge: true }); // Use merge: true to ensure we don't overwrite existing fields
-
-        // Redirect to the dashboard page (or show success message)
-        alert('User signed up successfully!');
-        window.location.href = '/dashboard.html'; // Redirect to a new page with user dashboard
-
-      } catch (error) {
-        console.error("Error signing up:", error);
-        alert("Error signing up. Please try again.");
+    // Check if the user is already signed in, and if so, redirect to welcome.html
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        window.location.href = "/signup/welcome.html"; // Redirect to the welcome page if logged in
       }
     });
+
+    // Sign up process
+    const signUpButton = document.getElementById('signUpButton');
+    signUpButton.addEventListener('click', function() {
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+
+      auth.createUserWithEmailAndPassword(email, password)
+        .then(function(userCredential) {
+          // After successful sign up, set the user info
+          const user = userCredential.user;
+          console.log('User signed up:', user);
+
+          // Redirect to the welcome page after signup
+          window.location.href = '/signup/welcome.html';
+        })
+        .catch(function(error) {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          console.error('Error code:', errorCode, 'Error message:', errorMessage);
+          alert(errorMessage); // Show error message
+        });
+    });
   </script>
-</head>
-<body>
-  <h1>Signup</h1>
-  <form id="signupForm">
-    <input type="email" id="email" placeholder="Email" required>
-    <input type="password" id="password" placeholder="Password" required>
-    <select id="battalion" required>
-      <option value="83301">Battalion 83301</option>
-      <option value="83302">Battalion 83302</option>
-      <!-- Add more battalion options here -->
-    </select>
-    <button type="submit">Sign Up</button>
-  </form>
 </body>
 </html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign In</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      background-color: #111;
+      color: #fff;
+    }
+
+    .button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #00b5d8;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .button:hover {
+      background-color: #0092b3;
+    }
+
+    .error {
+      color: red;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Sign In</h1>
+
+  <input type="email" id="emailInput" placeholder="Enter your email" />
+  <input type="password" id="passwordInput" placeholder="Enter your password" />
+  <button class="button" id="submitButton">Sign In</button>
+
+  <div id="errorMessage" class="error"></div>
+
+  <script type="module">
+    // Import Firebase modules
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-auth.js";
+
+    // Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyDnKHJqHvV5E8m-LIMzBJfb0JK8F2FTfd0",
+      authDomain: "hope-of-israel-796fa.firebaseapp.com",
+      projectId: "hope-of-israel-796fa",
+      storageBucket: "hope-of-israel-796fa.appspot.com",
+      messagingSenderId: "626678328925",
+      appId: "1:626678328925:web:42dec1dca540ed77e9a7b4",
+      measurementId: "G-8NRCSXW6S8"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // Get the DOM elements
+    const emailInput = document.getElementById("emailInput");
+    const passwordInput = document.getElementById("passwordInput");
+    const submitButton = document.getElementById("submitButton");
+    const errorMessage = document.getElementById("errorMessage");
+
+    // Handle Sign In
+    submitButton.addEventListener("click", () => {
+      const email = emailInput.value.trim();
+      const password = passwordInput.value.trim();
+
+      // Log the input values
+      console.log("Email:", email);
+      console.log("Password:", password);
+
+      // Check if the inputs are empty
+      if (email === "" || password === "") {
+        errorMessage.textContent = "Both fields are required.";
+        return;
+      }
+
+      // Sign In with Firebase Authentication
+      signInWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          // Successfully signed in
+          console.log("Signed in successfully:", userCredential.user.email);
+          // Redirect to the dashboard
+          window.location.href = "/dashboard/dashboard.html";
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMsg = error.message;
+
+          // Handle errors
+          if (errorCode === 'auth/user-not-found') {
+            console.error("No user found with this email.");
+            errorMessage.textContent = "No user found with this email. Please sign up.";
+          } else if (errorCode === 'auth/wrong-password') {
+            console.error("Incorrect password.");
+            errorMessage.textContent = "Incorrect password. Please try again.";
+          } else {
+            console.error("Error during sign-in:", errorMsg);
+            errorMessage.textContent = "Error: " + errorMsg;
+          }
+        });
+    });
+  </script>
+</body>
+</html>

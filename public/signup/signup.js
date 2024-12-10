@@ -1,51 +1,34 @@
-// Firebase configuration
-const firebaseConfig = {
-  apiKey: "AIzaSyDnKHJqHvV5E8m-LIMzBJfb0JK8F2FTfd0",
-  authDomain: "hope-of-israel-796fa.firebaseapp.com",
-  databaseURL: "https://hope-of-israel-796fa-default-rtdb.firebaseio.com",
-  projectId: "hope-of-israel-796fa",
-  storageBucket: "hope-of-israel-796fa.firebasestorage.app",
-  messagingSenderId: "626678328925",
-  appId: "1:626678328925:web:42dec1dca540ed77e9a7b4",
-  measurementId: "G-8NRCSXW6S8"
-};
+// signup.js
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-auth.js";
+import { getFirestore, setDoc, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-firestore.js";
+import { firebaseConfig } from "../firebase/firebaseConfig.js"; // Adjust import path
+import { signUp } from './auth.js'; // Import the signUp function
 
 // Initialize Firebase
-const app = firebase.initializeApp(firebaseConfig);
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const firestore = getFirestore(app);
 
-// Initialize Firebase Auth and Firestore
-const auth = firebase.auth();
-const firestore = firebase.firestore();
-
-// Function to handle user sign-up
-document.getElementById('signupForm').addEventListener('submit', async (e) => {
+// Handle form submission
+document.getElementById("signupForm").addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  // Get form data
-  const email = document.getElementById('email').value;
-  const password = document.getElementById('password').value;
-  const battalion = document.getElementById('battalion').value;
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value.trim();
+  const battalion = document.getElementById("battalion").value.trim();
 
   try {
-    // Sign up with Firebase Auth (using the existing flow)
-    const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-    const user = userCredential.user;
+    // Ensure user is signed out before attempting to sign up
+    await signOut(auth);
 
-    // Save user data to Firestore
-    const userRef = firestore.collection('users').doc(user.uid); // Use UID as document ID
-    await userRef.set({
-      email: user.email,
-      battalion: battalion,
-      completedNames: 0,  // Initialize completed names count as 0
-      createdAt: firebase.firestore.FieldValue.serverTimestamp()  // Timestamp for when user was created
-    });
+    // Create user in Firebase Authentication and save to Firestore
+    await signUp(email, password, battalion);
 
-    // Redirect to the dashboard page (or show success message)
-    alert('User signed up successfully!');
-    window.location.href = '/dashboard.html'; // Redirect to a new page with user dashboard
-
+    // After successful signup, redirect to battalion selection
+    window.location.href = "/signup/battalion.html"; // Ensure this path is correct
   } catch (error) {
-    console.error("Error signing up:", error);
+    console.error("Error signing up:", error.message);
     alert("Error signing up. Please try again.");
   }
 });
