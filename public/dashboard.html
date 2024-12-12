@@ -7,7 +7,7 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-app.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-auth.js";
-    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-firestore.js";
+    import { getFirestore, doc, getDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-firestore.js";
 
     // Firebase configuration
     const firebaseConfig = {
@@ -47,6 +47,25 @@
         } catch (error) {
           console.error("Error fetching user data: ", error);
         }
+
+        try {
+          // Set the battalion document ID (replace 'battalion1' with the actual battalion ID)
+          const battalionId = "battalion1"; // Update to match your Firestore structure
+          const battalionDocRef = doc(firestore, "battalions", battalionId);
+
+          // Listen for real-time updates to the battalion document
+          onSnapshot(battalionDocRef, (battalionDoc) => {
+            if (battalionDoc.exists()) {
+              const battalionData = battalionDoc.data();
+              const battalionTotalElement = document.getElementById("battalionTotal");
+              battalionTotalElement.textContent = battalionData.totalNames || 0;
+            } else {
+              console.error("Battalion document does not exist.");
+            }
+          });
+        } catch (error) {
+          console.error("Error fetching battalion data: ", error);
+        }
       } else {
         // Redirect to sign-in page if not authenticated
         window.location.href = "/signup/signin.html";
@@ -59,6 +78,7 @@
   <div>
     <h2>Welcome, <span id="userName">loading...</span>!</h2>
     <p>You have completed <span id="completedNames">0</span> names so far.</p>
+    <p>Total names completed by your battalion: <span id="battalionTotal">loading...</span></p>
   </div>
 </body>
 </html>

@@ -38,13 +38,12 @@
   <input type="text" id="userNameInput" placeholder="Enter your name" />
   <button class="button" id="submitButton">Submit</button>
 
-  <!-- Firebase SDK (v9 Modular) -->
-  <script type="module">
-    // Import the necessary Firebase modules
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
-    import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+  <!-- Firebase Libraries -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 
+  <script>
     // Firebase configuration
     const firebaseConfig = {
       apiKey: "AIzaSyDnKHJqHvV5E8m-LIMzBJfb0JK8F2FTfd0",
@@ -57,22 +56,21 @@
     };
 
     // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
+    firebase.initializeApp(firebaseConfig);
+
+    const auth = firebase.auth();
+    const db = firebase.firestore();
 
     // Ensure the user is signed in before accessing this page
-    onAuthStateChanged(auth, (user) => {
+    auth.onAuthStateChanged(function(user) {
       if (!user) {
         window.location.href = "/signup.html"; // Redirect to signup page if not logged in
       } else {
         // If the user has already set their name, redirect to dashboard
-        const userRef = doc(db, "users", user.uid);
-        getDoc(userRef).then((docSnap) => {
-          if (docSnap.exists()) {
-            window.location.href = "/dashboard/dashboard.html"; // Redirect to dashboard if name exists in Firestore
-          }
-        });
+        const userName = localStorage.getItem('userName');
+        if (userName) {
+          window.location.href = "/battalion.html";
+        }
       }
     });
 
@@ -80,22 +78,31 @@
     const submitButton = document.getElementById("submitButton");
     const userNameInput = document.getElementById("userNameInput");
 
-    submitButton.addEventListener("click", function() {
+    submitButton.addEventListener("click", async function() {
       const name = userNameInput.value.trim();
       if (name) {
-        // Save the user's name to Firestore
-        const user = auth.currentUser;
-        const userRef = doc(db, "users", user.uid);
+        try {
+          const user = auth.currentUser;
+          if (user) {
+            // Save user's name to Firestore
+            await db.collection("users").doc(user.uid).set({
+              name: name,
+              email: user.email,
+              createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
 
-        setDoc(userRef, {
-          name: name
-        }).then(() => {
-          // After saving the name, redirect to battalion page
-          window.location.href = "/signup/battalion.html";
-        }).catch((error) => {
-          console.error("Error saving name:", error);
-          alert("Error saving name: " + error.message);
-        });
+            // Store user name in localStorage (optional)
+            localStorage.setItem('userName', name);
+
+            // Redirect to the dashboard after setting the name
+            window.location.href = "/battalion.html";
+          } else {
+            alert("No authenticated user found.");
+          }
+        } catch (error) {
+          console.error("Error saving user name:", error);
+          alert("Failed to save your name. Please try again.");
+        }
       } else {
         alert("Please enter your name.");
       }
