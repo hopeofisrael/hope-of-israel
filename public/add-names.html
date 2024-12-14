@@ -3,79 +3,276 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Update Completed Names</title>
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-app.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-auth.js";
-    import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-firestore.js";
+  <title>Update Names Completed</title>
+  <style>
+    /* General Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-    // Firebase configuration
-    const firebaseConfig = {
-      apiKey: "AIzaSyDnKHJqHvV5E8m-LIMzBJfb0JK8F2FTfd0",
-      authDomain: "hope-of-israel-796fa.firebaseapp.com",
-      projectId: "hope-of-israel-796fa",
-      storageBucket: "hope-of-israel-796fa.appspot.com",
-      messagingSenderId: "626678328925",
-      appId: "1:626678328925:web:42dec1dca540ed77e9a7b4",
-      measurementId: "G-8NRCSXW6S8",
-    };
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #222222;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+
+    .form-container {
+      text-align: center;
+      width: 100%;
+      max-width: 400px;
+      padding: 30px;
+      background-color: transparent;
+    }
+
+    h1 {
+      font-size: 24px;
+      color: #ffffff;
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      position: relative;
+      margin-bottom: 20px;
+    }
+
+    label {
+      position: absolute;
+      top: -10px;
+      left: 10px;
+      color: #ffffff;
+      font-size: 12px;
+      font-weight: normal;
+    }
+
+    input {
+      width: 100%;
+      padding: 15px;
+      margin: 10px 0;
+      border: 1px solid #25c3e2;
+      background-color: transparent;
+      color: #ffffff;
+      border-radius: 4px;
+      font-size: 16px;
+    }
+
+    button {
+      width: 100%;
+      padding: 15px;
+      background-color: #25c3e2;
+      color: #ffffff;
+      border: none;
+      border-radius: 4px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #1a9ca9;
+    }
+
+    p {
+      margin-top: 20px;
+      color: #ffffff;
+      font-size: 14px;
+    }
+
+    p a {
+      color: #25c3e2;
+      text-decoration: none;
+    }
+
+    p a:hover {
+      text-decoration: underline;
+    }
+
+    .navbar-container {
+      width: 100%;
+      display: flex;
+      position: relative;
+      justify-content: center;
+      background-color: #222222;
+      margin-bottom: 20px;
+    }
+
+    .navbar-navbar-interactive {
+      width: 100%;
+      display: flex;
+      max-width: 1200px;
+      align-items: center;
+      padding-top: 10px;
+      padding-left: 20px;
+      padding-right: 20px;
+      padding-bottom: 10px;
+      justify-content: space-between;
+    }
+
+    .navbar-links1 {
+      gap: 20px;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      margin-left: 20px;
+      flex-direction: row;
+      justify-content: flex-start;
+    }
+
+    .navbar-links1 a {
+      color: #ffffff;
+      font-size: 16px;
+      text-decoration: none;
+      padding: 10px;
+      transition: 0.3s ease;
+    }
+
+    .navbar-links1 a:hover {
+      color: #25c3e2;
+    }
+
+    .navbar-auth-buttons a {
+      padding: 10px 20px;
+      color: #ffffff;
+      border: 1px solid #25c3e2;
+      border-radius: 4px;
+      text-decoration: none;
+      font-size: 16px;
+      transition: 0.3s ease;
+    }
+
+    .navbar-auth-buttons a:hover {
+      background-color: #25c3e2;
+      color: #222222;
+    }
+
+    @media(max-width: 991px) {
+      .navbar-desktop-menu {
+        display: none;
+      }
+    }
+
+    @media(max-width: 767px) {
+      .navbar-navbar-interactive {
+        padding-left: 15px;
+        padding-right: 15px;
+      }
+    }
+
+    @media(max-width: 479px) {
+      .navbar-navbar-interactive {
+        padding: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <div class="navbar-container">
+    <div class="navbar-navbar-interactive">
+      <nav class="navbar-desktop-menu">
+        <div class="navbar-links1">
+          <a href="index.html">Home</a>
+          <a href="find-your-battalion.html">Find Your Battalion</a>
+          <a href="contact.html">Contact</a>
+          <a href="about.html">About</a>
+          <a href="https://keepthescore.com/board/jmgqcvtcqpdmr/" target="_blank">Global Leaderboard</a>
+          <a href="https://www.familysearch.org/temple/ordinances-ready" target="_blank">Find Names</a>
+          <a href="https://forms.gle/hxR3wDErx3ohRpYQ7" target="_blank">Request A Battalion</a>
+        </div>
+      </nav>
+      <div class="navbar-auth-buttons">
+        <a href="/signin.html">Sign In</a>
+        <a href="/signup.html">Sign Up</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="content-container">
+    <h1>Update Names Completed</h1>
+    <form id="add-names-form">
+      <label for="completed-names">Completed Names:</label>
+      <input type="number" id="completed-names" required>
+      <button type="submit">Update</button>
+    </form>
+  </div>
+
+  <script type="module">
+    import { getFirestore, doc, updateDoc, getDoc } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-firestore.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-auth.js";
+    import { firebaseConfig } from "./firebase/firebaseConfig.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-app.js";
 
     // Initialize Firebase
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const firestore = getFirestore(app);
 
-    // Track the logged-in user and handle form submission
-    onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        const userId = user.uid;
-        const form = document.getElementById("updateForm");
-        const statusMessage = document.getElementById("statusMessage");
-
-        form.addEventListener("submit", async (e) => {
-          e.preventDefault(); // Prevent page reload
-
-          const additionalNames = parseInt(document.getElementById("additionalNames").value, 10);
-          if (isNaN(additionalNames) || additionalNames <= 0) {
-            statusMessage.textContent = "Please enter a valid number greater than 0.";
-            return;
-          }
-
-          try {
-            const userDocRef = doc(firestore, "users", userId);
-            const userDoc = await getDoc(userDocRef);
-
-            if (userDoc.exists()) {
-              const currentTotal = userDoc.data().completedNames || 0;
-              const updatedTotal = currentTotal + additionalNames;
-
-              // Update Firestore
-              await updateDoc(userDocRef, { completedNames: updatedTotal });
-
-              statusMessage.textContent = `Successfully updated! Your new total is ${updatedTotal}.`;
-              form.reset(); // Clear the form
-            } else {
-              statusMessage.textContent = "User document does not exist.";
-            }
-          } catch (error) {
-            console.error("Error updating completed names: ", error);
-            statusMessage.textContent = "An error occurred. Please try again.";
-          }
-        });
-      } else {
-        // Redirect to sign-in page if not authenticated
-        window.location.href = "/signin.html";
+    // Check user authentication state
+    onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        window.location.href = "/signin.html"; // Redirect if user is not logged in
       }
     });
+
+    // Handle form submission to update names completed
+    const addNamesForm = document.getElementById("add-names-form");
+    addNamesForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const completedNames = document.getElementById("completed-names").value;
+
+      const user = auth.currentUser;
+      if (user) {
+        try {
+          const userRef = doc(firestore, "users", user.uid);
+
+          // Fetch the current user data
+          const userSnapshot = await getDoc(userRef);
+          const userData = userSnapshot.data();
+          const currentCompletedNames = userData.completedNames || 0;
+
+          // Update the user's completed names
+          await updateDoc(userRef, { completedNames: currentCompletedNames + parseInt(completedNames) });
+
+          // Check if achievement should be awarded (e.g., 10 names completed)
+          if (currentCompletedNames + parseInt(completedNames) >= 10) {
+            await addAchievement(user.uid, "10 Names Completed", "path_to_icon.png");
+          }
+
+          alert("Names updated successfully!");
+          window.location.href = "dashboard.html"; // Redirect back to dashboard.html
+        } catch (error) {
+          console.error("Error updating names:", error.message);
+        }
+      }
+    });
+
+    // Function to add achievement
+    async function addAchievement(userId, achievementTitle, achievementIconUrl) {
+      const userRef = doc(firestore, "users", userId);
+      
+      try {
+        // Get the current achievements array
+        const userSnapshot = await getDoc(userRef);
+        const userData = userSnapshot.data();
+        const achievements = userData.achievements || []; // Default to empty array if no achievements
+
+        // Add the new achievement
+        achievements.push({ title: achievementTitle, icon: achievementIconUrl });
+
+        // Update the achievements in Firestore
+        await updateDoc(userRef, { achievements: achievements });
+        console.log('Achievement added!');
+      } catch (error) {
+        console.error("Error adding achievement:", error.message);
+      }
+    }
   </script>
-</head>
-<body>
-  <h1>Update Completed Names</h1>
-  <form id="updateForm">
-    <label for="additionalNames">Number of names completed:</label>
-    <input type="number" id="additionalNames" name="additionalNames" min="1" required>
-    <button type="submit">Update</button>
-  </form>
-  <p id="statusMessage"></p>
 </body>
 </html>

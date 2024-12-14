@@ -104,16 +104,6 @@
       justify-content: space-between;
     }
 
-    .navbar-image1 {
-      height: 3rem;
-    }
-
-    .navbar-desktop-menu {
-      flex: 1;
-      display: flex;
-      justify-content: space-between;
-    }
-
     .navbar-links1 {
       gap: 20px;
       flex: 1;
@@ -136,15 +126,6 @@
       color: #25c3e2;
     }
 
-    .navbar-burger-menu {
-      display: none;
-    }
-
-    .navbar-icon1 {
-      width: 20px;
-      height: 20px;
-    }
-
     .navbar-auth-buttons a {
       padding: 10px 20px;
       color: #ffffff;
@@ -164,10 +145,6 @@
       .navbar-desktop-menu {
         display: none;
       }
-
-      .navbar-burger-menu {
-        display: flex;
-      }
     }
 
     @media(max-width: 767px) {
@@ -175,25 +152,11 @@
         padding-left: 15px;
         padding-right: 15px;
       }
-
-      .navbar-burger-menu {
-        align-items: center;
-        justify-content: center;
-      }
     }
 
     @media(max-width: 479px) {
       .navbar-navbar-interactive {
         padding: 10px;
-      }
-
-      .navbar-icon1 {
-        animation-name: none;
-        animation-delay: 0s;
-        animation-duration: 300ms;
-        animation-direction: normal;
-        animation-iteration-count: 1;
-        animation-timing-function: ease;
       }
     }
   </style>
@@ -294,7 +257,7 @@
           battalion: selectedBattalion
         });
         // Redirect after successful submission
-        window.location.href = "/dashboard.html";
+        window.location.href = "/welcome.html";
       } catch (error) {
         // Display any errors
         errorMessage.textContent = `Error: ${error.message}`;

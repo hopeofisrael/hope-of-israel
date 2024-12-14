@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hope of Israel - Sign Up</title>
+  <title>Sign In</title>
   <style>
     /* General Reset */
     * {
@@ -37,6 +37,20 @@
       margin-bottom: 20px;
     }
 
+    .form-group {
+      position: relative;
+      margin-bottom: 20px;
+    }
+
+    label {
+      position: absolute;
+      top: -10px;
+      left: 10px;
+      color: #ffffff;
+      font-size: 12px;
+      font-weight: normal;
+    }
+
     input {
       width: 100%;
       padding: 15px;
@@ -48,11 +62,7 @@
       font-size: 16px;
     }
 
-    input::placeholder {
-      color: #aaaaaa;
-    }
-
-    .btn {
+    button {
       width: 100%;
       padding: 15px;
       background-color: #25c3e2;
@@ -64,7 +74,7 @@
       transition: 0.3s ease;
     }
 
-    .btn:hover {
+    button:hover {
       background-color: #1a9ca9;
     }
 
@@ -104,16 +114,6 @@
       justify-content: space-between;
     }
 
-    .navbar-image1 {
-      height: 3rem;
-    }
-
-    .navbar-desktop-menu {
-      flex: 1;
-      display: flex;
-      justify-content: space-between;
-    }
-
     .navbar-links1 {
       gap: 20px;
       flex: 1;
@@ -136,15 +136,6 @@
       color: #25c3e2;
     }
 
-    .navbar-burger-menu {
-      display: none;
-    }
-
-    .navbar-icon1 {
-      width: 20px;
-      height: 20px;
-    }
-
     .navbar-auth-buttons a {
       padding: 10px 20px;
       color: #ffffff;
@@ -164,10 +155,6 @@
       .navbar-desktop-menu {
         display: none;
       }
-
-      .navbar-burger-menu {
-        display: flex;
-      }
     }
 
     @media(max-width: 767px) {
@@ -175,25 +162,11 @@
         padding-left: 15px;
         padding-right: 15px;
       }
-
-      .navbar-burger-menu {
-        align-items: center;
-        justify-content: center;
-      }
     }
 
     @media(max-width: 479px) {
       .navbar-navbar-interactive {
         padding: 10px;
-      }
-
-      .navbar-icon1 {
-        animation-name: none;
-        animation-delay: 0s;
-        animation-duration: 300ms;
-        animation-direction: normal;
-        animation-iteration-count: 1;
-        animation-timing-function: ease;
       }
     }
   </style>
@@ -220,53 +193,46 @@
     </div>
   </div>
 
-  <!-- Sign-Up Form -->
+  <!-- Sign In Form -->
   <div class="form-container">
     <h1>Sign In</h1>
-    <input type="email" id="emailInput" placeholder="Email address" />
-    <input type="password" id="passwordInput" placeholder="Password" />
-    <button class="btn" id="submitButton">Sign up</button>
-    <p>New to Hope of Israel? <a href="/signup/signup.html">Sign Up</a></p>
-    <div id="errorMessage" style="color: red; margin-top: 10px;"></div>
+    <form id="signinForm">
+      <div class="form-group">
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required />
+      </div>
+      <div class="form-group">
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required />
+      </div>
+      <button type="submit">Sign In</button>
+    </form>
+    <p>Don't have an account? <a href="signup.html">Sign Up</a></p>
   </div>
+
+  <!-- Firebase Script Import -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-auth.js";
+    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-auth.js";
+    import { firebaseConfig } from "./firebase/firebaseConfig.js"; // Or use auth.js if preferred
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyDnKHJqHvV5E8m-LIMzBJfb0JK8F2FTfd0",
-      authDomain: "hope-of-israel-796fa.firebaseapp.com",
-      projectId: "hope-of-israel-796fa",
-      storageBucket: "hope-of-israel-796fa.appspot.com",
-      messagingSenderId: "626678328925",
-      appId: "1:626678328925:web:42dec1dca540ed77e9a7b4",
-      measurementId: "G-8NRCSXW6S8"
-    };
-
+    // Initialize Firebase
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
-    const emailInput = document.getElementById("emailInput");
-    const passwordInput = document.getElementById("passwordInput");
-    const submitButton = document.getElementById("submitButton");
-    const errorMessage = document.getElementById("errorMessage");
+    // Handle sign-in
+    document.getElementById("signinForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
 
-    submitButton.addEventListener("click", () => {
-      const email = emailInput.value.trim();
-      const password = passwordInput.value.trim();
-
-      if (!email || !password) {
-        errorMessage.textContent = "Both fields are required.";
-        return;
-      }
-
-      createUserWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-          console.log("User signed up:", userCredential.user);
-          window.location.href = "/welcome.html"; // Adjust as needed for your routing
+      signInWithEmailAndPassword(auth, email, password)
+        .then(() => {
+          alert("Sign in successful!");
+          window.location.href = "dashboard.html";
         })
         .catch((error) => {
-          errorMessage.textContent = `Error: ${error.message}`;
+          alert("Error: " + error.message);
         });
     });
   </script>

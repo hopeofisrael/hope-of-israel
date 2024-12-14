@@ -5,106 +5,221 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Welcome</title>
   <style>
+    /* General Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     body {
       font-family: Arial, sans-serif;
+      background-color: #222222;
       display: flex;
       flex-direction: column;
+      justify-content: flex-start;
       align-items: center;
-      justify-content: center;
-      height: 100vh;
-      background-color: #111;
-      color: #fff;
+      min-height: 100vh;
+      margin: 0;
     }
 
-    .button {
-      margin-top: 20px;
-      padding: 10px 20px;
-      background-color: #00b5d8;
-      color: #fff;
+    .form-container {
+      text-align: center;
+      width: 100%;
+      max-width: 400px;
+      padding: 30px;
+      background-color: transparent;
+    }
+
+    h1 {
+      font-size: 24px;
+      color: #ffffff;
+      margin-bottom: 20px;
+    }
+
+    p {
+      color: #ffffff;
+      font-size: 16px;
+      margin-bottom: 20px;
+    }
+
+    label {
+      color: #ffffff;
+      font-size: 16px;
+      margin-bottom: 10px;
+      display: block;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 15px;
+      margin: 10px 0;
+      border: 1px solid #25c3e2;
+      background-color: transparent;
+      color: #ffffff;
+      border-radius: 4px;
+      font-size: 16px;
+    }
+
+    button {
+      width: 100%;
+      padding: 15px;
+      background-color: #25c3e2;
+      color: #ffffff;
       border: none;
       border-radius: 4px;
+      font-size: 16px;
       cursor: pointer;
-      transition: background-color 0.3s ease;
+      transition: 0.3s ease;
     }
 
-    .button:hover {
-      background-color: #0092b3;
+    button:hover {
+      background-color: #1a9ca9;
+    }
+
+    p#errorMessage {
+      margin-top: 20px;
+      color: red;
+    }
+
+    .navbar-container {
+      width: 100%;
+      display: flex;
+      position: relative;
+      justify-content: center;
+      background-color: #222222;
+      margin-bottom: 20px;
+    }
+
+    .navbar-navbar-interactive {
+      width: 100%;
+      display: flex;
+      max-width: 1200px;
+      align-items: center;
+      padding-top: 10px;
+      padding-left: 20px;
+      padding-right: 20px;
+      padding-bottom: 10px;
+      justify-content: space-between;
+    }
+
+    .navbar-links1 {
+      gap: 20px;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      margin-left: 20px;
+      flex-direction: row;
+      justify-content: flex-start;
+    }
+
+    .navbar-links1 a {
+      color: #ffffff;
+      font-size: 16px;
+      text-decoration: none;
+      padding: 10px;
+      transition: 0.3s ease;
+    }
+
+    .navbar-links1 a:hover {
+      color: #25c3e2;
+    }
+
+    .navbar-auth-buttons a {
+      padding: 10px 20px;
+      color: #ffffff;
+      border: 1px solid #25c3e2;
+      border-radius: 4px;
+      text-decoration: none;
+      font-size: 16px;
+      transition: 0.3s ease;
+    }
+
+    .navbar-auth-buttons a:hover {
+      background-color: #25c3e2;
+      color: #222222;
+    }
+
+    @media(max-width: 991px) {
+      .navbar-desktop-menu {
+        display: none;
+      }
+    }
+
+    @media(max-width: 767px) {
+      .navbar-navbar-interactive {
+        padding-left: 15px;
+        padding-right: 15px;
+      }
+    }
+
+    @media(max-width: 479px) {
+      .navbar-navbar-interactive {
+        padding: 10px;
+      }
     }
   </style>
 </head>
 <body>
-  <h1>Welcome! Please enter your name to continue:</h1>
+  <!-- Navbar -->
+  <div class="navbar-container">
+    <div class="navbar-navbar-interactive">
+      <nav class="navbar-desktop-menu">
+        <div class="navbar-links1">
+          <a href="index.html">Home</a>
+          <a href="find-your-battalion.html">Find Your Battalion</a>
+          <a href="contact.html">Contact</a>
+          <a href="about.html">About</a>
+          <a href="https://keepthescore.com/board/jmgqcvtcqpdmr/" target="_blank">Global Leaderboard</a>
+          <a href="https://www.familysearch.org/temple/ordinances-ready" target="_blank">Find Names</a>
+          <a href="https://forms.gle/hxR3wDErx3ohRpYQ7" target="_blank">Request A Battalion</a>
+        </div>
+      </nav>
+      <div class="navbar-auth-buttons">
+        <a href="/signin.html">Sign In</a>
+        <a href="/signup.html">Sign Up</a>
+      </div>
+    </div>
+  </div>
 
-  <input type="text" id="userNameInput" placeholder="Enter your name" />
-  <button class="button" id="submitButton">Submit</button>
+  <!-- Name Collection Form -->
+  <div class="form-container">
+    <h1>Welcome to Hope of Israel!</h1>
+    <form id="name-form">
+      <label for="name">Name:</label>
+      <input type="text" id="name" required>
+      <button type="submit">Save Name</button>
+    </form>
+    <p id="errorMessage"></p>
+  </div>
 
-  <!-- Firebase Libraries -->
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-
-  <script>
-    // Firebase configuration
-    const firebaseConfig = {
-      apiKey: "AIzaSyDnKHJqHvV5E8m-LIMzBJfb0JK8F2FTfd0",
-      authDomain: "hope-of-israel-796fa.firebaseapp.com",
-      projectId: "hope-of-israel-796fa",
-      storageBucket: "hope-of-israel-796fa.appspot.com",
-      messagingSenderId: "626678328925",
-      appId: "1:626678328925:web:42dec1dca540ed77e9a7b4",
-      measurementId: "G-8NRCSXW6S8"
-    };
+  <script type="module">
+    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-firestore.js";
+    import { getAuth } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-auth.js";
+    import { firebaseConfig } from "./firebase/firebaseConfig.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-app.js";
 
     // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const firestore = getFirestore(app);
 
-    const auth = firebase.auth();
-    const db = firebase.firestore();
+    // Handle name form submission
+    const nameForm = document.getElementById("name-form");
+    nameForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const name = document.getElementById("name").value;
 
-    // Ensure the user is signed in before accessing this page
-    auth.onAuthStateChanged(function(user) {
-      if (!user) {
-        window.location.href = "/signup.html"; // Redirect to signup page if not logged in
-      } else {
-        // If the user has already set their name, redirect to dashboard
-        const userName = localStorage.getItem('userName');
-        if (userName) {
-          window.location.href = "/battalion.html";
-        }
-      }
-    });
-
-    // Handle name submission
-    const submitButton = document.getElementById("submitButton");
-    const userNameInput = document.getElementById("userNameInput");
-
-    submitButton.addEventListener("click", async function() {
-      const name = userNameInput.value.trim();
-      if (name) {
+      const user = auth.currentUser;
+      if (user) {
         try {
-          const user = auth.currentUser;
-          if (user) {
-            // Save user's name to Firestore
-            await db.collection("users").doc(user.uid).set({
-              name: name,
-              email: user.email,
-              createdAt: firebase.firestore.FieldValue.serverTimestamp()
-            });
-
-            // Store user name in localStorage (optional)
-            localStorage.setItem('userName', name);
-
-            // Redirect to the dashboard after setting the name
-            window.location.href = "/battalion.html";
-          } else {
-            alert("No authenticated user found.");
-          }
+          const userRef = doc(firestore, "users", user.uid);
+          await setDoc(userRef, { name }, { merge: true });
+          alert("Name saved!");
+          window.location.href = "dashboard.html"; // Redirect to dashboard.html after saving name
         } catch (error) {
-          console.error("Error saving user name:", error);
-          alert("Failed to save your name. Please try again.");
+          console.error("Error saving name:", error.message);
         }
-      } else {
-        alert("Please enter your name.");
       }
     });
   </script>
