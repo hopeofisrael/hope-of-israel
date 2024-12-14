@@ -18,8 +18,8 @@ module.exports = {
               font-src 'self' https://fonts.gstatic.com;
               connect-src 'self' https://vercel.live https://www.googleapis.com 
                 https://firestore.googleapis.com https://firebase.googleapis.com 
-                https://identitytoolkit.googleapis.com https://securetoken.googleapis.com
-                https://sheets.googleapis.com; 
+                https://identitytoolkit.googleapis.com https://securetoken.googleapis.com 
+                https://sheets.googleapis.com wss://ws-us3.pusher.com; 
               img-src 'self' data:;
               frame-src 'self' https://vercel.live;
             `.replace(/\n/g, ' ').replace(/\s{2,}/g, ' ').trim(), // Minify policy string
@@ -29,6 +29,6 @@ module.exports = {
     ];
   },
   env: {
-    API_URL: process.env.API_URL, // We are keeping only the API_URL here now
+    API_URL: process.env.API_URL, // Keep the API_URL configuration
   },
 };
