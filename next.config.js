@@ -28,6 +28,14 @@ module.exports = {
       },
     ];
   },
+  async rewrites() {
+    return [
+      {
+        source: '/signin', // The route to match
+        destination: '/signin.html', // The static HTML file in the public directory
+      },
+    ];
+  },
   env: {
     API_URL: process.env.API_URL, // Keep the API_URL configuration
   },
