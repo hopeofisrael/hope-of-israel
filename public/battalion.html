@@ -159,6 +159,21 @@
         padding: 10px;
       }
     }
+
+    .additional-text {
+      color: #ffffff;
+      font-size: 14px;
+      margin-top: 10px;
+    }
+
+    .additional-text a {
+      color: #25c3e2;
+      text-decoration: none;
+    }
+
+    .additional-text a:hover {
+      text-decoration: underline;
+    }
   </style>
 </head>
 <body>
@@ -167,11 +182,9 @@
     <div class="navbar-navbar-interactive">
       <nav class="navbar-desktop-menu">
         <div class="navbar-links1">
-          <a href="index.html">Home</a>
-          <a href="find-your-battalion.html">Find Your Battalion</a>
-          <a href="contact.html">Contact</a>
-          <a href="about.html">About</a>
-          <a href="https://keepthescore.com/board/jmgqcvtcqpdmr/" target="_blank">Global Leaderboard</a>
+          <a href="https://hope-of-israel.teleporthq.app/">Home</a>
+          <a href="https://hope-of-israel.teleporthq.app/contact">Contact</a>
+          <a href="https://hope-of-israel.teleporthq.app/about">About</a>
           <a href="https://www.familysearch.org/temple/ordinances-ready" target="_blank">Find Names</a>
           <a href="https://forms.gle/hxR3wDErx3ohRpYQ7" target="_blank">Request A Battalion</a>
         </div>
@@ -193,7 +206,10 @@
       <option value="Rigby - Battalion 83442">Rigby - Battalion 83442</option>
       <option value="Riverton - Battalion 84065">Riverton - Battalion 84065</option>
     </select>
-    <br><br>
+    <p class="additional-text">
+      Don’t see your battalion? <a href="https://forms.gle/yrD9bMvMSqX7uJTx9" target="_blank">Request Battalion</a>.
+    </p>
+    <br>
     <button type="button" id="submitButton" class="btn">Select Battalion</button>
     <p id="errorMessage" style="color: red;"></p>
   </div>
@@ -257,7 +273,7 @@
           battalion: selectedBattalion
         });
         // Redirect after successful submission
-        window.location.href = "/welcome.html";
+        window.location.href = "/dashboard.html";
       } catch (error) {
         // Display any errors
         errorMessage.textContent = `Error: ${error.message}`;

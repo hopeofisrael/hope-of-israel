@@ -107,10 +107,7 @@
       display: flex;
       max-width: 1200px;
       align-items: center;
-      padding-top: 10px;
-      padding-left: 20px;
-      padding-right: 20px;
-      padding-bottom: 10px;
+      padding: 10px 20px;
       justify-content: space-between;
     }
 
@@ -151,6 +148,11 @@
       color: #222222;
     }
 
+    .navbar-logo img {
+      width: 40px; /* Adjust size of the icon */
+      height: 40px; /* Adjust size of the icon */
+    }
+
     @media(max-width: 991px) {
       .navbar-desktop-menu {
         display: none;
@@ -178,10 +180,8 @@
       <nav class="navbar-desktop-menu">
         <div class="navbar-links1">
           <a href="index.html">Home</a>
-          <a href="find-your-battalion.html">Find Your Battalion</a>
           <a href="contact.html">Contact</a>
           <a href="about.html">About</a>
-          <a href="https://keepthescore.com/board/jmgqcvtcqpdmr/" target="_blank">Global Leaderboard</a>
           <a href="https://www.familysearch.org/temple/ordinances-ready" target="_blank">Find Names</a>
           <a href="https://forms.gle/hxR3wDErx3ohRpYQ7" target="_blank">Request A Battalion</a>
         </div>
@@ -245,7 +245,6 @@
             await addAchievement(user.uid, "10 Names Completed", "path_to_icon.png");
           }
 
-          alert("Names updated successfully!");
           window.location.href = "dashboard.html"; // Redirect back to dashboard.html
         } catch (error) {
           console.error("Error updating names:", error.message);
