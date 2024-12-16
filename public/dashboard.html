@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard</title>
   <style>
+    /* Styling (same as before) */
     * {
       margin: 0;
       padding: 0;
@@ -87,33 +88,48 @@
       margin-bottom: 20px;
     }
 
-    .dashboard-boxes {
-      width: 100%;
-      display: flex;
-      gap: 20px;
-    }
+.dashboard-boxes {
+  width: 100%;
+  display: flex;
+  gap: 20px;
+}
 
-    .left-boxes {
-      width: 65%;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
+.left-boxes {
+  width: 50%; /* Adjusted to 50% width */
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
 
-    .right-box {
-      width: auto;
-      padding: 30px;
-      background-color: #333333;
-      border-radius: 8px;
-      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
-    }
+.right-boxes {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  flex-grow: 1;  /* This allows it to take up the remaining space */
+}
 
-    .left-box {
-      background-color: #333333;
-      padding: 30px;
-      border-radius: 8px;
-      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
-    }
+.right-box {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; /* Ensures content stays at the top */
+  min-height: 240px;  /* Adjust this to your preferred box height */
+  padding: 30px;
+  background-color: #333333;
+  border-radius: 8px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.right-box:last-child {
+  min-height: 270px;  /* Make the bottom box longer (adjust as needed) */
+}
+
+.left-box {
+  background-color: #333333;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
+}
+
 
     .left-box h1, .right-box h1 {
       font-size: 30px;
@@ -154,6 +170,35 @@
       text-decoration: underline;
     }
 
+    /* Leaderboard Styles */
+    .leaderboard-box {
+      width: 100%;
+      padding: 30px;
+      background-color: #333333;
+      border-radius: 8px;
+      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
+    }
+
+    .leaderboard-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .leaderboard-table th, .leaderboard-table td {
+      padding: 10px;
+      text-align: left;
+      border-bottom: 1px solid #444444;
+    }
+
+    .leaderboard-table th {
+      color: #ffffff;
+      background-color: #444444;
+    }
+
+    .leaderboard-table tr:hover {
+      background-color: #555555;
+    }
+
     @media(max-width: 767px) {
       .dashboard-container {
         padding: 20px;
@@ -179,13 +224,8 @@
           <a href="https://hope-of-israel.teleporthq.app/contact">Contact</a>
           <a href="https://hope-of-israel.teleporthq.app/about">About</a>
           <a href="https://www.familysearch.org/temple/ordinances-ready" target="_blank">Find Names</a>
-          <a href="https://forms.gle/hxR3wDErx3ohRpYQ7" target="_blank">Request A Battalion</a>
         </div>
       </nav>
-      <div class="navbar-auth-buttons">
-        <a href="/signin.html">Sign In</a>
-        <a href="/signup.html">Sign Up</a>
-      </div>
     </div>
   </div>
 
@@ -214,13 +254,47 @@
             <button class="button" id="update-goal-btn">Update Goal</button>
           </a>
         </div>
+
+        <div class="left-box">
+          <h1>Temple:</h1>
+          <p>Ready to attend the temple?</p>
+          <a href="https://www.familysearch.org/temple/ordinances-ready" target="_blank">
+            <button class="button">Find Family Names</button>
+          </a>
+          <a href="https://www.churchofjesuschrist.org/temples/schedule/appointment" target="_blank">
+            <button class="button">Schedule Appointment</button>
+          </a>
+        </div>
       </div>
 
-      <div class="right-box">
-        <h1>Battalion: <span id="user-battalion">Loading...</span></h1>
-        <p id="battalion-total-names">Total Names Completed: Loading...</p>
-        <p>Not your battalion? <a href="battalion.html" class="switch-battalion">Switch Battalions</a></p>
+      <div class="right-boxes">
+        <div class="right-box">
+          <h1>Battalion: <span id="user-battalion">Loading...</span></h1>
+          <p id="battalion-total-names">Total Names Completed: Loading...</p>
+        </div>
+
+        <div class="right-box">
+          <h1>Global</h1>
+          <p id="global-total-names">Loading...</p>
+        </div>
       </div>
+    </div>
+
+    <!-- Leaderboard Box -->
+    <div class="leaderboard-box">
+      <h1>Leaderboard</h1>
+      <table class="leaderboard-table">
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>Battalion</th>
+            <th>Total Names Completed</th>
+          </tr>
+        </thead>
+        <tbody id="leaderboard-table-body">
+          <!-- Leaderboard data will be populated here -->
+        </tbody>
+      </table>
     </div>
   </div>
 
@@ -245,24 +319,45 @@
             document.getElementById("user-weekly-goal").textContent = `Weekly Goal: ${userData.weeklyGoal || 'Not Set'}`;
             document.getElementById("user-monthly-goal").textContent = `Monthly Goal: ${userData.monthlyGoal || 'Not Set'}`;
             document.getElementById("user-yearly-goal").textContent = `Yearly Goal: ${userData.yearlyGoal || 'Not Set'}`;
-            document.getElementById("user-battalion").textContent = userData.battalion || 'Not Assigned';
+            document.getElementById("user-battalion").textContent = userData.battalion;
+
+            // Fetch battalion and global totals
+            let battalionNames = 0;
+            let globalTotalNames = 0;
+            const battalionData = {};
+
+            // Get all users data and compute totals
+            getDocs(collection(firestore, "users")).then((querySnapshot) => {
+              querySnapshot.forEach((doc) => {
+                const userData = doc.data();
+                globalTotalNames += userData.completedNames || 0;
+
+                // Group by battalion
+                if (!battalionData[userData.battalion]) {
+                  battalionData[userData.battalion] = 0;
+                }
+                battalionData[userData.battalion] += userData.completedNames || 0;
+              });
+
+              // Update the user battalion total
+              document.getElementById("battalion-total-names").textContent = `Total Names Completed: ${battalionData[userData.battalion] || 0}`;
+              document.getElementById("global-total-names").textContent = `Global Names Completed: ${globalTotalNames}`;
+
+              // Update leaderboard
+              const sortedBattalions = Object.entries(battalionData).sort((a, b) => b[1] - a[1]);
+              const leaderboardTableBody = document.getElementById("leaderboard-table-body");
+
+              sortedBattalions.forEach(([battalion, totalNames], index) => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                  <td>${index + 1}</td>
+                  <td>${battalion}</td>
+                  <td>${totalNames}</td>
+                `;
+                leaderboardTableBody.appendChild(row);
+              });
+            });
           }
-        }).catch((error) => {
-          console.error("Error loading user data:", error);
-        });
-
-        const battalionRef = collection(firestore, "users");
-        let totalBattalionNames = 0;
-
-        getDocs(battalionRef).then((snapshot) => {
-          snapshot.forEach((doc) => {
-            const userData = doc.data();
-            if (userData.battalion) {
-              totalBattalionNames += userData.completedNames || 0;
-            }
-          });
-
-          document.getElementById("battalion-total-names").textContent = `Total Names Completed: ${totalBattalionNames}`;
         });
       }
     });
