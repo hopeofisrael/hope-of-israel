@@ -62,6 +62,10 @@
       font-size: 16px;
     }
 
+    input:invalid {
+      border-color: red;
+    }
+
     button {
       width: 100%;
       padding: 15px;
@@ -185,10 +189,6 @@
           <a href="https://www.familysearch.org/temple/ordinances-ready" target="_blank">Find Names</a>
         </div>
       </nav>
-      <div class="navbar-auth-buttons">
-        <a href="/signin.html">Sign In</a>
-        <a href="/signup.html">Sign Up</a>
-      </div>
     </div>
   </div>
 
@@ -197,7 +197,7 @@
     <h1>Update Names Completed</h1>
     <form id="add-names-form">
       <label for="completed-names">Completed Names:</label>
-      <input type="number" id="completed-names" required>
+      <input type="number" id="completed-names" min="0" max="25" required>
       <button type="submit">Update</button>
     </form>
   </div>
@@ -208,63 +208,57 @@
     import { firebaseConfig } from "./firebase/firebaseConfig.js";
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-app.js";
 
-    // Initialize Firebase
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const firestore = getFirestore(app);
 
-    // Check user authentication state
     onAuthStateChanged(auth, (user) => {
       if (!user) {
-        window.location.href = "/signin.html"; // Redirect if user is not logged in
+        window.location.href = "/signin.html";
       }
     });
 
-    // Handle form submission to update names completed
     const addNamesForm = document.getElementById("add-names-form");
     addNamesForm.addEventListener("submit", async (e) => {
       e.preventDefault();
-      const completedNames = document.getElementById("completed-names").value;
+      const completedNames = parseInt(document.getElementById("completed-names").value);
+
+      if (isNaN(completedNames) || completedNames < 0) {
+        alert("Please enter a valid non-negative number.");
+        return;
+      }
 
       const user = auth.currentUser;
       if (user) {
         try {
           const userRef = doc(firestore, "users", user.uid);
-
-          // Fetch the current user data
           const userSnapshot = await getDoc(userRef);
           const userData = userSnapshot.data();
           const currentCompletedNames = userData.completedNames || 0;
 
-          // Update the user's completed names
-          await updateDoc(userRef, { completedNames: currentCompletedNames + parseInt(completedNames) });
+          await updateDoc(userRef, { completedNames: currentCompletedNames + completedNames });
 
-          // Check if achievement should be awarded (e.g., 10 names completed)
-          if (currentCompletedNames + parseInt(completedNames) >= 10) {
+          if (currentCompletedNames + completedNames >= 10) {
             await addAchievement(user.uid, "10 Names Completed", "path_to_icon.png");
           }
 
-          window.location.href = "dashboard.html"; // Redirect back to dashboard.html
+          window.location.href = "dashboard.html";
         } catch (error) {
           console.error("Error updating names:", error.message);
         }
       }
     });
 
-    // Function to add achievement
     async function addAchievement(userId, achievementTitle, achievementIconUrl) {
       const userRef = doc(firestore, "users", userId);
-      
+
       try {
-        // Get the current achievements array
         const userSnapshot = await getDoc(userRef);
         const userData = userSnapshot.data();
-        const achievements = userData.achievements || []; // Default to empty array if no achievements
+        const achievements = userData.achievements || [];
 
-        // Add the new achievement
         achievements.push({ title: achievementTitle, icon: achievementIconUrl });
 
-        // Update the achievements in Firestore
         await updateDoc(userRef, { achievements: achievements });
         console.log('Achievement added!');
       } catch (error) {
