@@ -24,15 +24,23 @@
         {
           "key": "Access-Control-Allow-Origin",
           "value": "*"
+        },
+        {
+          "key": "Content-Type",
+          "value": "image/png"
         }
       ]
     },
     {
-      "source": "/favicon-144x144.ico",
+      "source": "/favicon-144x144.png",
       "headers": [
         {
           "key": "Access-Control-Allow-Origin",
           "value": "*"
+        },
+        {
+          "key": "Content-Type",
+          "value": "image/png"
         }
       ]
     },
@@ -42,6 +50,10 @@
         {
           "key": "Access-Control-Allow-Origin",
           "value": "*"
+        },
+        {
+          "key": "Content-Type",
+          "value": "image/png"
         }
       ]
     },
@@ -51,6 +63,10 @@
         {
           "key": "Access-Control-Allow-Origin",
           "value": "*"
+        },
+        {
+          "key": "Content-Type",
+          "value": "image/png"
         }
       ]
     }
