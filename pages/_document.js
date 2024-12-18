@@ -16,6 +16,9 @@ class MyDocument extends Document {
           />
           {/* Add Favicon */}
           <link rel="icon" href="/favicon.ico" />
+          
+          {/* Add the Manifest */}
+          <link rel="manifest" href="/manifest.json" />
         </Head>
         <body>
           <Main />
