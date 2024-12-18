@@ -6,7 +6,7 @@
   <title>Sign In</title>
 
   <!-- Manifest Content -->
-  <script type="application/manifest+json">
+  <script type="application/json" id="manifest">
   {
     "name": "Hope of Israel",
     "short_name": "HopeOfIsrael",
@@ -263,6 +263,21 @@
         .catch((error) => {
           alert("Error: " + error.message);
         });
+    });
+  </script>
+
+  <!-- Manifest Script to add link dynamically -->
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      const manifestData = document.getElementById('manifest').textContent;
+      const manifestBlob = new Blob([manifestData], { type: 'application/json' });
+      const manifestURL = URL.createObjectURL(manifestBlob);
+
+      const link = document.createElement('link');
+      link.rel = 'manifest';
+      link.href = manifestURL;
+      
+      document.head.appendChild(link);
     });
   </script>
 </body>
