@@ -1,9 +1,17 @@
+import { useEffect, useState } from "react";
+import firebase from "../lib/firebase"; // Import the initialized Firebase
+
 // Firebase User ID and Battalion ID
-const userId = firebase.auth().currentUser.uid; // Get the currently signed-in user's ID
 const battalionId = "battalion1"; // Replace with your battalion document ID
 
-// Update Completed Count
+// Function to update the completed count
 function updateCompletedCount(newCount) {
+  const userId = firebase.auth().currentUser?.uid; // Safely get the signed-in user's ID
+  if (!userId) {
+    console.error("No user is signed in. Cannot update the completed count.");
+    return;
+  }
+
   const battalionRef = firebase.firestore().collection("battalions").doc(battalionId);
 
   // Update the user's count and recalculate the total
@@ -42,3 +50,57 @@ if ("serviceWorker" in navigator) {
       });
   });
 }
+
+// Custom hook to track authentication state
+const useAuth = () => {
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    // Listen for changes in the authentication state
+    const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
+      setUser(user);
+      if (user) {
+        console.log(`User authenticated: ${user.displayName || user.email}`);
+      } else {
+        console.log("No user authenticated");
+      }
+    });
+
+    return () => unsubscribe(); // Cleanup listener when the component is unmounted
+  }, []);
+
+  return user;
+};
+
+// Main component
+const HomePage = () => {
+  const user = useAuth(); // Get the current user
+
+  useEffect(() => {
+    if (user) {
+      console.log(`Welcome back, ${user.displayName || user.email}`);
+      // Example: Update completed count (replace with actual logic)
+      updateCompletedCount(10); // Replace 10 with the desired count or logic
+    } else {
+      console.log("User is not signed in");
+    }
+  }, [user]); // Run this effect when the user state changes
+
+  if (!user) {
+    return (
+      <div>
+        <p>Please sign in to access the site.</p>
+        {/* Add a sign-in button or redirect logic here */}
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      <p>Welcome back, {user.displayName || user.email}!</p>
+      {/* Include additional functionality or UI here */}
+    </div>
+  );
+};
+
+export default HomePage;

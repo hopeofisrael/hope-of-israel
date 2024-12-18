@@ -1,6 +1,13 @@
 // auth.js
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-app.js";
-import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-auth.js";
+import {
+  getAuth,
+  onAuthStateChanged,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  setPersistence,
+  browserLocalPersistence,
+} from "https://www.gstatic.com/firebasejs/9.16.0/firebase-auth.js";
 import { getFirestore, doc, setDoc, getDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-firestore.js";
 import { firebaseConfig } from "./firebaseConfig.js";
 
@@ -8,6 +15,15 @@ import { firebaseConfig } from "./firebaseConfig.js";
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const firestore = getFirestore(app);
+
+// Ensure user session persists
+setPersistence(auth, browserLocalPersistence)
+  .then(() => {
+    console.log("Persistence mode set to 'local'—users will stay signed in.");
+  })
+  .catch((error) => {
+    console.error("Error setting persistence mode:", error);
+  });
 
 // Sign up function
 export const signUp = async (email, password, name, battalion) => {
@@ -24,9 +40,6 @@ export const signUp = async (email, password, name, battalion) => {
       createdAt: serverTimestamp(),
     });
 
-    // Create achievements subcollection
-    await createAchievementsSubcollection(user.uid);
-
     console.log("User signed up successfully");
     return true; // Indicate success
   } catch (error) {
@@ -35,20 +48,16 @@ export const signUp = async (email, password, name, battalion) => {
   }
 };
 
-// Function to create achievements subcollection
-const createAchievementsSubcollection = async (userId) => {
+// Sign in function
+export const signIn = async (email, password) => {
   try {
-    const achievementDocRef = doc(firestore, "users", userId, "achievements", "first_name_counter");
-
-    // Create the initial achievement document
-    await setDoc(achievementDocRef, {
-      unlocked: false,
-      icon: "first-name-icon.png", // Update this path to your actual icon location
-    });
-
-    console.log("Achievements subcollection created for user:", userId);
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
+    console.log("User signed in successfully:", user.email);
+    return true; // Indicate success
   } catch (error) {
-    console.error("Error creating achievements subcollection:", error);
+    console.error("Error signing in:", error.message);
+    throw error;
   }
 };
 

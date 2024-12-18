@@ -191,7 +191,7 @@
           <a href="https://hope-of-israel.teleporthq.app/about">About</a>
           <a href="https://www.familysearch.org/temple/ordinances-ready" target="_blank">Find Names</a>
         </div>
-      </div>
+      </nav>
     </div>
   </div>
 
@@ -214,28 +214,21 @@
 
   <!-- Firebase Script Import -->
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-auth.js";
-    import { firebaseConfig } from "./firebase/firebaseConfig.js"; // Or use auth.js if preferred
-
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
+    import { signIn } from "./firebase/auth.js"; // Import signIn function from auth.js
 
     // Handle sign-in
-    document.getElementById("signinForm").addEventListener("submit", (e) => {
+    document.getElementById("signinForm").addEventListener("submit", async (e) => {
       e.preventDefault();
       const email = document.getElementById("email").value;
       const password = document.getElementById("password").value;
 
-      signInWithEmailAndPassword(auth, email, password)
-        .then(() => {
-          alert("Sign in successful!");
-          window.location.href = "dashboard.html";
-        })
-        .catch((error) => {
-          alert("Error: " + error.message);
-        });
+      try {
+        await signIn(email, password); // Use the new signIn function
+        alert("Sign in successful!");
+        window.location.href = "dashboard.html"; // Redirect to the dashboard
+      } catch (error) {
+        alert("Error: " + error.message);
+      }
     });
   </script>
 </body>
