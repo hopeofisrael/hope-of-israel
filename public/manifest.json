@@ -12,6 +12,11 @@
       "sizes": "48x48",
       "type": "image/x-icon"
     },
+{
+      "src": "/favicon/favicon-144x144.WebP",
+      "sizes": "144x144",
+      "type": "image/webp"
+    },
     {
       "src": "/favicon/web-app-manifest-192x192.ico",
       "sizes": "192x192",
