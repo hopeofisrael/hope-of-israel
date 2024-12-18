@@ -1,10 +1,11 @@
 {
   "name": "Hope of Israel",
-  "short_name": "HopeIsrael",
+  "short_name": "Hope",
+  "description": "A PWA for Hope of Israel.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#317EFB",
+  "theme_color": "#4CAF50",
   "icons": [
     {
       "src": "/favicon/favicon-144x144.png",
@@ -19,11 +20,6 @@
     {
       "src": "/favicon/web-app-manifest-512x512.png",
       "sizes": "512x512",
-      "type": "image/png"
-    },
-    {
-      "src": "/favicon/apple-touch-icon.png",
-      "sizes": "180x180",
       "type": "image/png"
     }
   ]
