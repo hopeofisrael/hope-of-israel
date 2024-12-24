@@ -20,11 +20,25 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="mobile-web-app-capable" content="yes">
-
-  <!-- Service Worker -->
-  <script src="/service-worker.js" defer></script>
 </head>
 <body>
   <h1>Welcome to Hope of Israel</h1>
+
+  <!-- Inline JavaScript for Service Worker Registration -->
+  <script>
+    // Register the service worker when the page is loaded
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/service-worker.js')
+          .then((registration) => {
+            console.log('Service Worker registered with scope:', registration.scope);
+          })
+          .catch((error) => {
+            console.log('Service Worker registration failed:', error);
+          });
+      });
+    }
+  </script>
+
 </body>
 </html>

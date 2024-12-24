@@ -364,6 +364,105 @@
                   <td>${totalNames}</td>
                 `;
                 leaderboardTableBody.appendChild(row);
+
+// Fetch battalion and global totals
+let battalionNames = 0;
+let globalTotalNames = 0;
+const battalionData = {};
+
+// Get all users data and compute totals
+getDocs(collection(firestore, "users")).then((querySnapshot) => {
+  querySnapshot.forEach((doc) => {
+    const userData = doc.data();
+    globalTotalNames += userData.completedNames || 0;
+
+    // Group by battalion
+    if (!battalionData[userData.battalion]) {
+      battalionData[userData.battalion] = 0;
+    }
+    battalionData[userData.battalion] += userData.completedNames || 0;
+  });
+
+  // Update the global total names
+  document.getElementById("global-total-names").textContent = `Global Names Completed: ${globalTotalNames}`;
+
+  // Update the user battalion total (For now showing the first battalion)
+  // If you need to display a specific battalion's total, use the correct battalion here
+  const firstBattalion = Object.keys(battalionData)[0];
+  document.getElementById("battalion-total-names").textContent = `Total Names Completed: ${battalionData[firstBattalion] || 0}`;
+
+  // Update leaderboard
+  const sortedBattalions = Object.entries(battalionData).sort((a, b) => b[1] - a[1]);
+  const leaderboardTableBody = document.getElementById("leaderboard-table-body");
+
+  // Clear any previous leaderboard data
+  leaderboardTableBody.innerHTML = '';
+
+  sortedBattalions.forEach(([battalion, totalNames], index) => {
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>${index + 1}</td>
+      <td>${battalion}</td>
+      <td>${totalNames}</td>
+    `;
+    leaderboardTableBody.appendChild(row);
+  });
+});
+
+// Install prompt logic
+let deferredPrompt;
+const installButton = document.createElement("button");
+installButton.textContent = "Install App";
+installButton.style.cssText = `
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #25c3e2;
+  color: #ffffff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  display: none; /* Initially hide the button */
+`;
+
+document.body.appendChild(installButton);
+
+window.addEventListener("beforeinstallprompt", (e) => {
+  // Prevent the mini-infobar from appearing
+  e.preventDefault();
+  // Save the event so it can be triggered later
+  deferredPrompt = e;
+
+  // Show the install button
+  installButton.style.display = "block";
+
+  installButton.addEventListener("click", () => {
+    // Hide the button
+    installButton.style.display = "none";
+    // Show the install prompt
+    deferredPrompt.prompt();
+    // Wait for the user to respond to the prompt
+    deferredPrompt.userChoice.then((choiceResult) => {
+      if (choiceResult.outcome === "accepted") {
+        console.log("User accepted the A2HS prompt");
+      } else {
+        console.log("User dismissed the A2HS prompt");
+      }
+      // Reset the deferred prompt variable
+      deferredPrompt = null;
+    });
+  });
+});
+
+// Optional: Hide the install button after the app is installed
+window.addEventListener("appinstalled", () => {
+  console.log("App was installed");
+  installButton.style.display = "none";
+});
+
+
               });
             });
           }
