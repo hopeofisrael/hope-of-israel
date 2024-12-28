@@ -71,7 +71,7 @@
       ]
     },
     {
-      "source": "/styles/*.css",
+      "source": "/styles/:path*",
       "headers": [
         {
           "key": "Content-Type",
