@@ -77,4 +77,12 @@
       "destination": "/index.html"
     }
   ]
+},
+{
+  "rewrites": [
+    {
+      "source": "/secondary/:path*",
+      "destination": "https://hope-of-israel.vercel.app/:path*"
+    }
+  ]
 }
