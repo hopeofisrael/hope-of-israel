@@ -186,12 +186,12 @@
     <div class="navbar-navbar-interactive">
       <nav class="navbar-desktop-menu">
         <div class="navbar-links1">
-          <a href="https://hope-of-israel.teleporthq.app/">Home</a>
-          <a href="https://hope-of-israel.teleporthq.app/contact">Contact</a>
-          <a href="https://hope-of-israel.teleporthq.app/about">About</a>
+          <a href="https://www.hope-of-israel.com">Home</a>
+          <a href="https://www.hope-of-israel.com/contact">Contact</a>
+          <a href="https://www.hope-of-israel.com/about">About</a>
           <a href="https://www.familysearch.org/temple/ordinances-ready" target="_blank">Find Names</a>
         </div>
-      </nav>
+      </div>
     </div>
   </div>
 
@@ -214,21 +214,28 @@
 
   <!-- Firebase Script Import -->
   <script type="module">
-    import { signIn } from "./firebase/auth.js"; // Import signIn function from auth.js
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-auth.js";
+    import { firebaseConfig } from "./firebase/firebaseConfig.js"; // Or use auth.js if preferred
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
 
     // Handle sign-in
-    document.getElementById("signinForm").addEventListener("submit", async (e) => {
+    document.getElementById("signinForm").addEventListener("submit", (e) => {
       e.preventDefault();
       const email = document.getElementById("email").value;
       const password = document.getElementById("password").value;
 
-      try {
-        await signIn(email, password); // Use the new signIn function
-        alert("Sign in successful!");
-        window.location.href = "dashboard.html"; // Redirect to the dashboard
-      } catch (error) {
-        alert("Error: " + error.message);
-      }
+      signInWithEmailAndPassword(auth, email, password)
+        .then(() => {
+          alert("Sign in successful!");
+          window.location.href = "dashboard.html";
+        })
+        .catch((error) => {
+          alert("Error: " + error.message);
+        });
     });
   </script>
 </body>
